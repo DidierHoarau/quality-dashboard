@@ -8,13 +8,15 @@ WORKDIR /opt/app
 COPY . .
 
 RUN npm ci && \
+    npm run test && \
     npm build
 
 
 # RUN
 FROM node:12-alpine
 
-COPY --from=builder /opt/app /opt/app
+COPY --from=builder /opt/app/dist /opt/app/dist
+COPY --from=builder /opt/app/node_modules /opt/app/node_modules
 
 WORKDIR /opt/app
 

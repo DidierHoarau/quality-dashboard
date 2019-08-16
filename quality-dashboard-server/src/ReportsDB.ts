@@ -13,7 +13,7 @@ export class ReportsDB {
     }
     reportsDB = await fse.readJSON(DB_FILE_PATH);
     if (!reportsDB.projects) {
-      reportsDB.projects = [];
+      reportsDB.groups = [];
     }
     fse.writeJSON(DB_FILE_PATH, reportsDB, { spaces: 2 });
   }
@@ -23,19 +23,21 @@ export class ReportsDB {
   }
 
   static async add(
+    groupName: string,
     projectName: string,
     projectVersion: string,
     reportName: string,
     processorType: string,
     content: any
   ): Promise<void> {
-    const project = arrayFindOrCreate(reportsDB.projects, { name: projectName }, { name: projectName, versions: [] });
+    const group = arrayFindOrCreate(reportsDB.groups, { name: groupName }, { name: groupName, projects: [] });
+    const project = arrayFindOrCreate(group.projects, { name: projectName }, { name: projectName, versions: [] });
     const version = arrayFindOrCreate(
       project.versions,
-      { version: projectVersion },
-      { version: projectVersion, reports: [] }
+      { name: projectVersion },
+      { name: projectVersion, reports: [] }
     );
-    const report = arrayFindOrCreate(version.reports, { name: reportName }, { type: reportName });
+    const report = arrayFindOrCreate(version.reports, { name: reportName }, { name: reportName });
     report.result = content;
     report.processor = processorType;
     report.date = new Date();
