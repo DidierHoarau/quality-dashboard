@@ -1,0 +1,46 @@
+{
+  "name": "quality-dashboard-server",
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "dev:docker": "./utils-dev-docker.sh",
+    "build": "tsc",
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "sonar": "node sonar-project.js",
+    "test": "jest --coverage",
+    "test-w": "jest --watch --coverage",
+    "dev": "NODE_ENV=NO_DOCKER concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"tsc -w\" \"nodemon dist/app.js\""
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.1.5",
+    "fs-extra": "^8.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0",
+    "request": "^2.88.0",
+    "targz": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.17.0",
+    "@types/express": "^4.17.0",
+    "@types/fs-extra": "^8.0.0",
+    "@types/jest": "^24.0.17",
+    "@types/lodash": "^4.14.136",
+    "@types/node": "^12.7.1",
+    "@types/request": "^2.48.2",
+    "@types/sinon": "^7.0.13",
+    "concurrently": "^4.1.1",
+    "eslint": "^6.1.0",
+    "jest": "^24.8.0",
+    "jest-html-reporter": "^2.5.0",
+    "nodemon": "^1.19.1",
+    "npm-watch": "^0.6.0",
+    "sinon": "^7.4.1",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
+  }
+}

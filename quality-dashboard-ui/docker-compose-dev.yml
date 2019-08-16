@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+  app:
+    build:
+      dockerfile: Dockerfile-dev
+      context: .
+    image: ${DOCKER_REGISTRY}/${REGISTRY_NAMESPACE}/${SERVICE}:${SERVICE_VERSION}
+    volumes:
+      - ./assets:/opt/app/assets
+      - ./components:/opt/app/components
+      - ./layouts:/opt/app/layouts
+      - ./middleware:/opt/app/middleware
+      - ./pages:/opt/app/pages
+      - ./plugins:/opt/app/plugins
+      - ./static:/opt/app/static
+      - ./store:/opt/app/store
+      - ./test:/opt/app/test
+      - ./.babelrc:/opt/app/.babelrc
+      - ./.eslintrc.js:/opt/app/.eslintrc.js
+      - ./.prettierrc:/opt/app/.prettierrc
+      - ./jest.config.js:/opt/app/jest.config.js
+      - ./nuxt.config.js:/opt/app/nuxt.config.js
+      - ./package.json:/opt/app/package.json
+      - ./package-lock.json:/opt/app/package-lock.json
+      - ./tailwind.config.js:/opt/app/tailwind.config.js
+    networks:
+      quality-dashboard-network:
+        aliases:
+          - quality-dashboard-ui
+
+networks:
+  quality-dashboard-network:
+    external: true

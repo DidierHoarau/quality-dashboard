@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  reverse-proxy:
+    build: .
+    image: ${DOCKER_REGISTRY}/${REGISTRY_NAMESPACE}/${SERVICE}:${SERVICE_VERSION}
+    ports:
+      - '80:80'
+      - '443:443'
+      - '8080:8080'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - quality-dashboard-network
+
+networks:
+  quality-dashboard-network:
+    external: true
