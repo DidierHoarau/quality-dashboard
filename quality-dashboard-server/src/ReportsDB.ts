@@ -1,12 +1,12 @@
 import * as fse from 'fs-extra';
-import { Config } from './Config';
 import * as _ from 'lodash';
+import { Config } from './Config';
 
 const DB_FILE_PATH = `${Config.DB_DIR}/reports.json`;
 let reportsDB;
 
 export class ReportsDB {
-  static async init(): Promise<void> {
+  public static async init(): Promise<void> {
     await fse.ensureDir(Config.DB_DIR);
     if (!fse.existsSync(DB_FILE_PATH)) {
       fse.writeJSON(DB_FILE_PATH, {});
@@ -18,11 +18,11 @@ export class ReportsDB {
     fse.writeJSON(DB_FILE_PATH, reportsDB, { spaces: 2 });
   }
 
-  static async list(): Promise<any> {
+  public static async list(): Promise<any> {
     return JSON.parse(JSON.stringify(reportsDB));
   }
 
-  static async add(
+  public static async add(
     groupName: string,
     projectName: string,
     projectVersion: string,

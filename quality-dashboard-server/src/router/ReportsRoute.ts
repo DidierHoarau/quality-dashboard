@@ -1,11 +1,11 @@
 import * as express from 'express';
-import * as path from 'path';
 import * as fse from 'fs-extra';
+import * as path from 'path';
+import * as targz from 'targz';
+import { Config } from '../Config';
 import { ReportsDB } from '../ReportsDB';
 import { ExpressRouterWrapper as ERW } from '../utils-std-ts/express-router-wrapper';
-import { Config } from '../Config';
 import { Logger } from '../utils-std-ts/logger';
-import * as targz from 'targz';
 
 export const ReportsRoute = express.Router();
 const logger = new Logger('ReportsRoute');
@@ -63,8 +63,8 @@ function extractTo(src: string, dest: string): Promise<void> {
   return new Promise((resolve, reject) => {
     targz.decompress(
       {
+        dest,
         src,
-        dest
       },
       async err => {
         if (err) {

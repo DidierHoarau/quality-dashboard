@@ -1,11 +1,11 @@
 import * as bodyParser from 'body-parser';
-import * as express from 'express';
 import { NextFunction, Response } from 'express';
+import * as express from 'express';
 import * as url from 'url';
+import { Config } from './Config';
 import { router } from './router';
 import { ExpressWrapper } from './utils-std-ts/express-wrapper';
 import { Logger } from './utils-std-ts/logger';
-import { Config } from './Config';
 
 const logger = new Logger('AppApi');
 

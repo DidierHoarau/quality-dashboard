@@ -5,7 +5,7 @@ services:
     build: .
     image: ${DOCKER_REGISTRY}/${REGISTRY_NAMESPACE}/${SERVICE}:${SERVICE_VERSION}
     volumes:
-      - /opt/data/quality-dashboard-server:/opt/data
+      - /opt/data
     networks:
       quality-dashboard-network:
         aliases:

@@ -8,8 +8,9 @@ WORKDIR /opt/app
 COPY . .
 
 RUN npm ci && \
+    npm run lint && \
     npm run test && \
-    npm build
+    npm run build
 
 
 # RUN
@@ -20,4 +21,4 @@ COPY --from=builder /opt/app/node_modules /opt/app/node_modules
 
 WORKDIR /opt/app
 
-CMD [ "node", "src/app.js" ]
+CMD [ "node", "dist/app.js" ]

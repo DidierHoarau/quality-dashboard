@@ -5,7 +5,7 @@
   "scripts": {
     "dev:docker": "./utils-dev-docker.sh",
     "build": "tsc",
-    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "lint": "tslint -c tslint.json -p tsconfig.json",
     "sonar": "node sonar-project.js",
     "test": "jest --coverage",
     "test-w": "jest --watch --coverage",
