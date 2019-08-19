@@ -8,12 +8,19 @@ export REGISTRY_NAMESPACE=default
 export SERVICE=$(cat info | grep name= | cut -f2 -d"=")
 export SERVICE_VERSION=$(cat info | grep version= | cut -f2 -d"=")
 
-docker-compose -f docker-compose-dev.yml build
-docker-compose -f docker-compose-dev.yml push
-docker stack deploy --compose-file docker-compose-dev.yml ${SERVICE}
+if [  "${DOCKER_CONTEXT}" = "" ]; then
+    export DOCKER_CONTEXT=.
+fi
 
-sleep 15
+export DOCKER_CONTEXT=${DOCKER_CONTEXT}
 
-docker exec -ti $(docker ps | grep ${SERVICE} | cut -f1 -d" ") npm ci
-docker exec -ti $(docker ps | grep ${SERVICE} | cut -f1 -d" ") npm run dev
+
+# docker-compose -f docker-compose-dev.yml build
+# docker-compose -f docker-compose-dev.yml push
+# docker stack deploy --compose-file docker-compose-dev.yml ${SERVICE}
+
+# sleep 20
+
+docker exec -ti $(docker ps | grep ${SERVICE} | cut -f1 -d" ") bash -c "export CYPRESS_INSTALL_BINARY=0 ; npm ci"
+docker exec -ti $(docker ps | grep ${SERVICE} | cut -f1 -d" ") bash -c "export PORT=80 ; npm run serve"
 

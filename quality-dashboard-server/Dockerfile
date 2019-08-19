@@ -18,6 +18,7 @@ FROM node:12-alpine
 
 COPY --from=builder /opt/app/dist /opt/app/dist
 COPY --from=builder /opt/app/node_modules /opt/app/node_modules
+COPY --from=builder /opt/app/plugins /opt/app/plugins
 
 WORKDIR /opt/app
 

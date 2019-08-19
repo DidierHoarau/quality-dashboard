@@ -1,47 +1,90 @@
 {
   "name": "quality-dashboard-ui",
-  "version": "1.0.0",
-  "description": "My good Nuxt.js project",
-  "author": "Didier Hoarau",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
     "dev:docker": "./utils-dev-docker.sh",
-    "dev:docker:ps": "utils-dev-docker.ps",
-    "build": "nuxt build",
-    "start": "nuxt start",
-    "generate": "nuxt generate",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "test": "jest"
-  },
-  "lint-staged": {
-    "*.{js,vue}": "eslint"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "serve": "NODE_ENV=development vue-cli-service serve --port 80",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "test:e2e": "vue-cli-service test:e2e",
+    "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.5.4",
-    "@nuxtjs/pwa": "^3.0.0-0",
-    "nuxt": "^2.0.0"
+    "axios": "^0.19.0",
+    "core-js": "^2.6.5",
+    "register-service-worker": "^1.6.2",
+    "vue": "^2.6.10",
+    "vue-class-component": "^7.0.2",
+    "vue-property-decorator": "^8.1.0",
+    "vue-router": "^3.0.3",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "@nuxtjs/tailwindcss": "^1.0.0",
-    "@nuxtjs/eslint-config": "^1.0.1",
-    "@nuxtjs/eslint-module": "^1.0.0",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^6.1.0",
-    "eslint-plugin-nuxt": ">=0.4.2",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "prettier": "^1.16.4",
-    "husky": "^2.6.0",
-    "lint-staged": "^8.2.1",
-    "@vue/test-utils": "^1.0.0-beta.27",
-    "babel-jest": "^24.1.0",
-    "jest": "^24.1.0",
-    "vue-jest": "^4.0.0-0"
+    "@types/jest": "^23.1.4",
+    "@vue/cli-plugin-babel": "^3.10.0",
+    "@vue/cli-plugin-e2e-cypress": "^3.10.0",
+    "@vue/cli-plugin-pwa": "^3.10.0",
+    "@vue/cli-plugin-typescript": "^3.10.0",
+    "@vue/cli-plugin-unit-jest": "^3.10.0",
+    "@vue/cli-service": "^3.10.0",
+    "@vue/test-utils": "1.0.0-beta.29",
+    "babel-core": "7.0.0-bridge.0",
+    "sass": "^1.18.0",
+    "sass-loader": "^7.1.0",
+    "ts-jest": "^23.0.0",
+    "typescript": "^3.4.3",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json",
+      "vue",
+      "ts",
+      "tsx"
+    ],
+    "transform": {
+      "^.+\\.vue$": "vue-jest",
+      ".+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "snapshotSerializers": [
+      "jest-serializer-vue"
+    ],
+    "testMatch": [
+      "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
+    ],
+    "testURL": "http://localhost/",
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ],
+    "globals": {
+      "ts-jest": {
+        "babelConfig": true
+      }
+    },
+    "vue": {
+      "devServer": {
+        "port": 8080
+      }
+    }
   }
 }

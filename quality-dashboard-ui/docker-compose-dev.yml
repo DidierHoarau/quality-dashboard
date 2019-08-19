@@ -7,23 +7,16 @@ services:
       context: .
     image: ${DOCKER_REGISTRY}/${REGISTRY_NAMESPACE}/${SERVICE}:${SERVICE_VERSION}
     volumes:
-      - ./assets:/opt/app/assets
-      - ./components:/opt/app/components
-      - ./layouts:/opt/app/layouts
-      - ./middleware:/opt/app/middleware
-      - ./pages:/opt/app/pages
-      - ./plugins:/opt/app/plugins
-      - ./static:/opt/app/static
-      - ./store:/opt/app/store
-      - ./test:/opt/app/test
-      - ./.babelrc:/opt/app/.babelrc
-      - ./.eslintrc.js:/opt/app/.eslintrc.js
-      - ./.prettierrc:/opt/app/.prettierrc
-      - ./jest.config.js:/opt/app/jest.config.js
-      - ./nuxt.config.js:/opt/app/nuxt.config.js
-      - ./package.json:/opt/app/package.json
-      - ./package-lock.json:/opt/app/package-lock.json
-      - ./tailwind.config.js:/opt/app/tailwind.config.js
+      - '${DOCKER_CONTEXT}/public:/opt/app/public'
+      - '${DOCKER_CONTEXT}/src:/opt/app/src'
+      - '${DOCKER_CONTEXT}/tests:/opt/app/tests'
+      - '${DOCKER_CONTEXT}/babel.config.js:/opt/app/babel.config.js'
+      - '${DOCKER_CONTEXT}/cypress.json:/opt/app/cypress.json'
+      - '${DOCKER_CONTEXT}/package-lock.json:/opt/app/package-lock.json'
+      - '${DOCKER_CONTEXT}/package.json:/opt/app/package.json'
+      - '${DOCKER_CONTEXT}/tsconfig.json:/opt/app/tsconfig.json'
+      - '${DOCKER_CONTEXT}/tslint.json:/opt/app/tslint.json'
+      - '${DOCKER_CONTEXT}/vue.config.js:/opt/app/vue.config.js'
     networks:
       quality-dashboard-network:
         aliases:
