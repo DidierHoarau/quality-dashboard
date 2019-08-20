@@ -10,7 +10,7 @@
             <h4>{{ version.name }}</h4>
             <div class="report-report" v-for="report in version.reports" :key="report.name">
               <a
-                :href="'/api/reports_data/'+group.name+'/'+project.name+'/'+version.name+'/'+report.name+'/report/'+report.result.link"
+                :href="'./api/reports_data/'+group.name+'/'+project.name+'/'+version.name+'/'+report.name+'/report/'+report.result.link"
               >{{ report.name }}</a>
               <span class="report-metric">{{ new Date(report.date).toLocaleString() }}</span>
               <span

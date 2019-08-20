@@ -1,0 +1,3 @@
+FROM didierhoarau/quality-dashboard-server
+
+COPY processors /opt/data/processors

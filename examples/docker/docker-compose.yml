@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  reverse-proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile-proxy
+    ports:
+      - '80:80'
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile-server
+    volumes:
+      - /opt/data
+  ui:
+    image: didierhoarau/quality-dashboard-ui
