@@ -19,15 +19,7 @@ export class AppApi {
       logger.info(`App listening on port ${PORT}`);
     });
 
-    api.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Methods', 'GET');
-      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-      res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate');
-      next();
-    });
-
-    api.use(`${Config.API_BASE_PATH}/report_data`, express.static(Config.REPORT_DIR));
+    api.use(`${Config.API_BASE_PATH}/reports_data`, express.static(Config.REPORT_DIR));
 
     api.use((req: any, res: Response, next: NextFunction) => {
       res.status(404);

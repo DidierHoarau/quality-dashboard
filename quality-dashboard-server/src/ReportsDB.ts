@@ -12,7 +12,7 @@ export class ReportsDB {
       fse.writeJSON(DB_FILE_PATH, {});
     }
     reportsDB = await fse.readJSON(DB_FILE_PATH);
-    if (!reportsDB.projects) {
+    if (!reportsDB.groups) {
       reportsDB.groups = [];
     }
     fse.writeJSON(DB_FILE_PATH, reportsDB, { spaces: 2 });

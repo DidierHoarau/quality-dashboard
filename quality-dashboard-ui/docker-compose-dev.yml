@@ -7,16 +7,16 @@ services:
       context: .
     image: ${DOCKER_REGISTRY}/${REGISTRY_NAMESPACE}/${SERVICE}:${SERVICE_VERSION}
     volumes:
-      - '${DOCKER_CONTEXT}/public:/opt/app/public'
-      - '${DOCKER_CONTEXT}/src:/opt/app/src'
-      - '${DOCKER_CONTEXT}/tests:/opt/app/tests'
-      - '${DOCKER_CONTEXT}/babel.config.js:/opt/app/babel.config.js'
-      - '${DOCKER_CONTEXT}/cypress.json:/opt/app/cypress.json'
-      - '${DOCKER_CONTEXT}/package-lock.json:/opt/app/package-lock.json'
-      - '${DOCKER_CONTEXT}/package.json:/opt/app/package.json'
-      - '${DOCKER_CONTEXT}/tsconfig.json:/opt/app/tsconfig.json'
-      - '${DOCKER_CONTEXT}/tslint.json:/opt/app/tslint.json'
-      - '${DOCKER_CONTEXT}/vue.config.js:/opt/app/vue.config.js'
+      - '${CUSTOM_DOCKER_CONTEXT}/public:/opt/app/public'
+      - '${CUSTOM_DOCKER_CONTEXT}/src:/opt/app/src'
+      - '${CUSTOM_DOCKER_CONTEXT}/tests:/opt/app/tests'
+      - '${CUSTOM_DOCKER_CONTEXT}/babel.config.js:/opt/app/babel.config.js'
+      - '${CUSTOM_DOCKER_CONTEXT}/cypress.json:/opt/app/cypress.json'
+      - '${CUSTOM_DOCKER_CONTEXT}/package-lock.json:/opt/app/package-lock.json'
+      - '${CUSTOM_DOCKER_CONTEXT}/package.json:/opt/app/package.json'
+      - '${CUSTOM_DOCKER_CONTEXT}/tsconfig.json:/opt/app/tsconfig.json'
+      - '${CUSTOM_DOCKER_CONTEXT}/tslint.json:/opt/app/tslint.json'
+      - '${CUSTOM_DOCKER_CONTEXT}/vue.config.js:/opt/app/vue.config.js'
     networks:
       quality-dashboard-network:
         aliases:

@@ -21,7 +21,7 @@ ERW.route(
   async (req, res) => {
     const reportFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${
       req.params.projectVersion
-    }_${req.params.reportName}`;
+    }/${req.params.reportName}`;
     if (fse.existsSync(reportFolder)) {
       await fse.remove(reportFolder);
     }
@@ -36,11 +36,15 @@ ERW.route(
     } else {
       throw new Error('Wrong report extension');
     }
-
-    if (fse.existsSync(`${Config.PROCESSOR_DIR}/${req.params.processorType}.js`)) {
+    let processor;
+    if (fse.existsSync(`${Config.PROCESSOR_DIR_USER}/${req.params.processorType}.js`)) {
+      processor = require(`${Config.PROCESSOR_DIR_USER}/${req.params.processorType}.js`);
+    } else if (fse.existsSync(`${Config.PROCESSOR_DIR}/${req.params.processorType}.js`)) {
+      processor = require(`${Config.PROCESSOR_DIR}/${req.params.processorType}.js`);
+    }
+    if (processor) {
       logger.info('Processor found');
       try {
-        const processor = require(`${Config.PROCESSOR_DIR}/${req.params.processorType}.js`);
         const result = await processor.analyse(`${reportFolder}/report`);
         logger.info(result);
         ReportsDB.add(
@@ -64,7 +68,7 @@ function extractTo(src: string, dest: string): Promise<void> {
     targz.decompress(
       {
         dest,
-        src,
+        src
       },
       async err => {
         if (err) {
