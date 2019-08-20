@@ -1,6 +1,6 @@
 module.exports = {
-    // options...
-    devServer: {
-        disableHostCheck: true
-    }
-}
+  devServer: {
+    disableHostCheck: true,
+  },
+  publicPath: "/quality-dashboard",
+};
