@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  app:
+    build: .
+    image: ${DOCKER_REGISTRY}/${REGISTRY_NAMESPACE}/${SERVICE}:${SERVICE_VERSION}
+    volumes:
+      - /opt/data
+    networks:
+      quality-dashboard-network:
+        aliases:
+          - quality-dashboard-server
+
+networks:
+  quality-dashboard-network:
+    external: true
