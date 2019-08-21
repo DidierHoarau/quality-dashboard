@@ -1,39 +1,9 @@
-# quality-dashboard-ui
+# Quality-Dashboard-UI
 
-## Project setup
-```
-npm install
-```
+## Image
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+didierhoarau/quality-dashboard-ui
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Documentation
 
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Run your end-to-end tests
-```
-npm run test:e2e
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+[https://github.com/DidierHoarau/quality-dashboard]
