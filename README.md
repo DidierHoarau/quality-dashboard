@@ -4,6 +4,8 @@ This project is born out of the need to centralise reports that are generated in
 
 This is made to be as simple and as light as possible.
 
+![alt text](https://github.com/DidierHoarau/quality-dashboard/raw/master/_shared/img/screenshot.png 'Quality Dashboard Screenshot')
+
 ## Installation
 
 The recommended aproach is to deploy the servces as Docker container. A deployment is composed of the following services:
