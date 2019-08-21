@@ -1,0 +1,39 @@
+[file]
+
+# Backends
+[backends]
+
+  [backends.quality-dashboard-server]
+
+    [backends.quality-dashboard-server.servers]
+      [backends.quality-dashboard-server.servers.server0]
+        hostname = "quality-dashboard-server"
+        url = "http://quality-dashboard-server"
+        weight = 1
+
+  [backends.quality-dashboard-ui]
+
+    [backends.quality-dashboard-ui.servers]
+      [backends.quality-dashboard-ui.servers.server0]
+        hostname = "quality-dashboard-ui"
+        url = "http://quality-dashboard-ui"
+        weight = 1
+
+# Frontends
+[frontends]
+
+  [frontends.quality-dashboard-server]
+    entryPoints = ["http"]
+    backend = "quality-dashboard-server"
+
+    [frontends.quality-dashboard-server.routes]
+        [frontends.quality-dashboard-server.routes.route0]
+        rule = "PathPrefixStrip:/quality-dashboard/api;AddPrefix:/api;"
+
+  [frontends.quality-dashboard-ui]
+    entryPoints = ["http"]
+    backend = "quality-dashboard-ui"
+
+    [frontends.quality-dashboard-ui.routes]
+        [frontends.quality-dashboard-ui.routes.route0]
+        rule = "PathPrefixStrip:/quality-dashboard;"
