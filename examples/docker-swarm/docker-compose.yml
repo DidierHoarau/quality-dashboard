@@ -25,6 +25,8 @@ services:
 
   ui:
     image: didierhoarau/quality-dashboard-ui
+    environment:
+      - BASEPATH=/quality-dashboard/
     networks:
       quality-dashboard-network:
         aliases:

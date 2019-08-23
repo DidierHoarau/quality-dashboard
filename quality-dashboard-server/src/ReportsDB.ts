@@ -1,7 +1,9 @@
 import * as fse from 'fs-extra';
 import * as _ from 'lodash';
 import { Config } from './Config';
+import { Logger } from './utils-std-ts/logger';
 
+const logger = new Logger('ReportsRoute');
 const DB_FILE_PATH = `${Config.DB_DIR}/reports.json`;
 let reportsDB;
 
@@ -41,6 +43,24 @@ export class ReportsDB {
     report.result = content;
     report.processor = processorType;
     report.date = new Date();
+    fse.writeJSON(DB_FILE_PATH, reportsDB, { spaces: 2 });
+  }
+
+  public static async deleteVersion(groupName: string, projectName: string, projectVersion: string): Promise<void> {
+    const group = _.find(reportsDB.groups, { name: groupName });
+    if (!group) {
+      throw new Error(`Version not found: ${groupName}/${projectName}/${projectVersion}`);
+    }
+    const project = _.find(group.projects, { name: projectName });
+    if (!project) {
+      throw new Error(`Version not found: ${groupName}/${projectName}/${projectVersion}`);
+    }
+    const versionIndex = _.findIndex(project.versions, { name: projectVersion });
+    if (versionIndex < 0) {
+      throw new Error(`Version not found: ${groupName}/${projectName}/${projectVersion}`);
+    }
+    logger.info(`Deleting version: ${groupName}/${projectName}/${projectVersion}`);
+    project.versions.splice(versionIndex, 1);
     fse.writeJSON(DB_FILE_PATH, reportsDB, { spaces: 2 });
   }
 }
