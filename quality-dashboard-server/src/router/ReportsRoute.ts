@@ -63,6 +63,18 @@ ERW.route(
   }
 );
 
+ERW.route(ReportsRoute, 'delete', '/:groupName/:projectName/:projectVersion', async (req, res) => {
+  const versionFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${
+    req.params.projectVersion
+  }`;
+
+  if (fse.existsSync(versionFolder)) {
+    await fse.remove(versionFolder);
+  }
+  ReportsDB.deleteVersion(req.params.groupName, req.params.projectName, req.params.projectVersion);
+  return res.status(202).send({});
+});
+
 function extractTo(src: string, dest: string): Promise<void> {
   return new Promise((resolve, reject) => {
     targz.decompress(
