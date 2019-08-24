@@ -3,7 +3,7 @@ import * as fse from 'fs-extra';
 import * as path from 'path';
 import * as targz from 'targz';
 import { Config } from '../Config';
-import { ReportsDB } from '../ReportsDB';
+import { ReportsDB } from '../db/ReportsDB';
 import { ExpressRouterWrapper as ERW } from '../utils-std-ts/express-router-wrapper';
 import { Logger } from '../utils-std-ts/logger';
 

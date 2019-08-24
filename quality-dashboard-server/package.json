@@ -20,7 +20,9 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "request": "^2.88.0",
-    "targz": "^1.0.1"
+    "sha1": "^1.1.1",
+    "targz": "^1.0.1",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.0",
