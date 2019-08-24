@@ -22,6 +22,19 @@ export class UsersDB {
     await fse.writeJSON(DB_FILE_PATH, usersDB, { spaces: 2 });
   }
 
+  public static async isInitialized(): Promise<boolean> {
+    return usersDB.users.length > 0;
+  }
+
+  public static async reset(): Promise<void> {
+    usersDB.users = [];
+    await fse.writeJSON(DB_FILE_PATH, usersDB, { spaces: 2 });
+  }
+
+  static getByUsername(username: string): Promise<any> {
+    return _.find(usersDB.users, { username });
+  }
+
   public static async list(): Promise<any> {
     return JSON.parse(JSON.stringify(usersDB));
   }

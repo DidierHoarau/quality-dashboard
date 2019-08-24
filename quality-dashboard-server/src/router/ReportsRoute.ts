@@ -19,9 +19,7 @@ ERW.route(
   'post',
   '/:groupName/:projectName/:projectVersion/:reportName/:processorType',
   async (req, res) => {
-    const reportFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${
-      req.params.projectVersion
-    }/${req.params.reportName}`;
+    const reportFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${req.params.projectVersion}/${req.params.reportName}`;
     if (fse.existsSync(reportFolder)) {
       await fse.remove(reportFolder);
     }
@@ -64,9 +62,7 @@ ERW.route(
 );
 
 ERW.route(ReportsRoute, 'delete', '/:groupName/:projectName/:projectVersion', async (req, res) => {
-  const versionFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${
-    req.params.projectVersion
-  }`;
+  const versionFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${req.params.projectVersion}`;
 
   if (fse.existsSync(versionFolder)) {
     await fse.remove(versionFolder);
