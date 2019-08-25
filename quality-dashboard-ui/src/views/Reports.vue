@@ -66,7 +66,9 @@ export default class Reports extends Vue {
 
   private async getGroups() {
     try {
-      const response = await axios.get(`${process.env.VUE_APP_BASEPATH}api/reports`);
+      const response = await axios.get(
+        `${process.env.VUE_APP_BASEPATH}api/reports`
+      );
       this.groups = response.data.groups;
       this.message.text = "";
     } catch (err) {
@@ -77,7 +79,9 @@ export default class Reports extends Vue {
   private async deleteVersion(group: string, project: string, version: string) {
     if (confirm(`Delete version ${version}?`)) {
       try {
-        const response = await axios.delete(`api/reports/${group}/${project}/${version}`);
+        const response = await axios.delete(
+          `api/reports/${group}/${project}/${version}`
+        );
         this.getGroups();
       } catch (err) {
         this.message.text = `Error deleting version: ${err.message}`;

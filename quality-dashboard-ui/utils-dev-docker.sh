@@ -3,6 +3,10 @@
 SERVICE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "${SERVICE_DIR}"
 
+if [ -f ../.env-dev.sh ]; then
+    . ../.env-dev.sh
+fi
+
 export DOCKER_REGISTRY=127.0.0.1:5000
 export REGISTRY_NAMESPACE=default
 export SERVICE=$(cat info | grep name= | cut -f2 -d"=")
@@ -21,4 +25,3 @@ sleep 20
 
 docker exec -ti $(docker ps | grep ${SERVICE} | cut -f1 -d" ") bash -c "export CYPRESS_INSTALL_BINARY=0 ; npm ci"
 docker exec -ti $(docker ps | grep ${SERVICE} | cut -f1 -d" ") bash -c "export PORT=80 ; npm run serve"
-
