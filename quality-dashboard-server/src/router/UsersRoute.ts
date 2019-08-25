@@ -36,9 +36,8 @@ ERW.route(UsersRoute, 'post', '/', async (req, res, next, stopAndSend) => {
   if (!req.body.password) {
     stopAndSend(400, 'ERR: "password" missing');
   }
-  const userList = await UsersDB.list();
-  for (const user of userList.users) {
-    // UsersDB.delete(user.id);
+  if (await UsersDB.isInitialized()) {
+    stopAndSend(403, 'ERR: Admin user already created');
   }
   const id = await UsersDB.add(req.body.username, req.body.password);
   return res.status(201).send({ id });

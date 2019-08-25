@@ -14,6 +14,14 @@ ERW.route(ReportsRoute, 'get', '/', async (req, res) => {
   return res.status(200).send(await ReportsDB.list());
 });
 
+ERW.route(ReportsRoute, 'delete', '/', async (req, res, next, stopAndSend) => {
+  if (process.env.NODE_ENV !== 'dev') {
+    stopAndSend(404, 'ERR: Reset forbidden for non dev environment');
+  }
+  ReportsDB.reset();
+  return res.status(202).send({});
+});
+
 ERW.route(
   ReportsRoute,
   'post',

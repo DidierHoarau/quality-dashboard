@@ -8,15 +8,22 @@ const DB_FILE_PATH = `${Config.DB_DIR}/reports.json`;
 let reportsDB;
 
 export class ReportsDB {
+  //
   public static async init(): Promise<void> {
     await fse.ensureDir(Config.DB_DIR);
     if (!fse.existsSync(DB_FILE_PATH)) {
-      await fse.writeJSON(DB_FILE_PATH, {});
+      reportsDB = {};
+    } else {
+      reportsDB = await fse.readJSON(DB_FILE_PATH);
     }
-    reportsDB = await fse.readJSON(DB_FILE_PATH);
     if (!reportsDB.groups) {
       reportsDB.groups = [];
     }
+    await fse.writeJSON(DB_FILE_PATH, reportsDB, { spaces: 2 });
+  }
+
+  public static async reset(): Promise<void> {
+    reportsDB = { groups: [] };
     await fse.writeJSON(DB_FILE_PATH, reportsDB, { spaces: 2 });
   }
 

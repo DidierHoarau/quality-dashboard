@@ -28,6 +28,28 @@ describe('/api/users/', () => {
       expect(responseList.data.users[0]).not.toHaveProperty('password');
       expect(responseList.data.users[0].id).toEqual(responseCreate.data.id);
     });
+
+    test('Can not create 2 users', done => {
+      axios
+        .post(`${Config.APIURL}/users`, {
+          username: 'admin',
+          password: 'admin'
+        })
+        .then(response => {
+          expect(response.data).toHaveProperty('id');
+          axios
+            .post(`${Config.APIURL}/users`, {
+              username: 'admin2',
+              password: 'admin2'
+            })
+            .then(() => {
+              done(new Error('Should not be able to created 2 user'));
+            })
+            .catch(err => {
+              done();
+            });
+        });
+    });
   });
 
   describe('POST /api/users/login', () => {
