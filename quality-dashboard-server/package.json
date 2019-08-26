@@ -9,7 +9,7 @@
     "sonar": "node sonar-project.js",
     "test": "jest --coverage",
     "test-w": "jest --watch --coverage",
-    "dev": "NODE_ENV=NO_DOCKER concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"tsc -w\" \"nodemon dist/app.js\""
+    "dev": "NODE_ENV=dev concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"tsc -w\" \"nodemon dist/app.js\""
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -20,7 +20,9 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "request": "^2.88.0",
-    "targz": "^1.0.1"
+    "sha1": "^1.1.1",
+    "targz": "^1.0.1",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.0",

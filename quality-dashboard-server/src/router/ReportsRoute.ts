@@ -3,7 +3,7 @@ import * as fse from 'fs-extra';
 import * as path from 'path';
 import * as targz from 'targz';
 import { Config } from '../Config';
-import { ReportsDB } from '../ReportsDB';
+import { ReportsDB } from '../db/ReportsDB';
 import { ExpressRouterWrapper as ERW } from '../utils-std-ts/express-router-wrapper';
 import { Logger } from '../utils-std-ts/logger';
 
@@ -12,6 +12,14 @@ const logger = new Logger('ReportsRoute');
 
 ERW.route(ReportsRoute, 'get', '/', async (req, res) => {
   return res.status(200).send(await ReportsDB.list());
+});
+
+ERW.route(ReportsRoute, 'delete', '/', async (req, res, next, stopAndSend) => {
+  if (process.env.NODE_ENV !== 'dev') {
+    stopAndSend(404, 'ERR: Reset forbidden for non dev environment');
+  }
+  ReportsDB.reset();
+  return res.status(202).send({});
 });
 
 ERW.route(
@@ -63,11 +71,13 @@ ERW.route(
   }
 );
 
-ERW.route(ReportsRoute, 'delete', '/:groupName/:projectName/:projectVersion', async (req, res) => {
+ERW.route(ReportsRoute, 'delete', '/:groupName/:projectName/:projectVersion', async (req, res, next, stopAndSend) => {
   const versionFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${
     req.params.projectVersion
   }`;
-
+  if (!req.user.authenticated) {
+    stopAndSend(403, 'ERR: authentication error');
+  }
   if (fse.existsSync(versionFolder)) {
     await fse.remove(versionFolder);
   }

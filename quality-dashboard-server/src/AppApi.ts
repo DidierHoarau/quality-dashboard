@@ -4,6 +4,7 @@ import * as express from 'express';
 import * as url from 'url';
 import { Config } from './Config';
 import { router } from './router';
+import { Auth } from './router/Auth';
 import { ExpressWrapper } from './utils-std-ts/express-wrapper';
 import { Logger } from './utils-std-ts/logger';
 
@@ -19,12 +20,29 @@ export class AppApi {
       logger.info(`App listening on port ${PORT}`);
     });
 
+    api.use((req, res, next) => {
+      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+      res.header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE');
+      next();
+    });
+
     api.use(`${Config.API_BASE_PATH}/reports_data`, express.static(Config.REPORT_DIR));
 
     api.use((req: any, res: Response, next: NextFunction) => {
       res.status(404);
       req.customApiLogging = { startDate: new Date() };
       logger.info(`${req.method} ${url.parse(req.url).pathname}`);
+      next();
+    });
+
+    api.use((req: any, res: Response, next: NextFunction) => {
+      if (req.headers.authorization) {
+        try {
+          req.user = Auth.checkToken(req.headers.authorization.split(' ')[1]);
+        } catch (err) {
+          logger.error(err);
+        }
+      }
       next();
     });
 

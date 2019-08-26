@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
+import Login from "./views/Login.vue";
 import Reports from "./views/Reports.vue";
 
 Vue.use(Router);
@@ -11,7 +12,12 @@ export default new Router({
     {
       path: "/",
       name: "reports",
-      component: Reports
-    }
-  ]
+      component: Reports,
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: Login,
+    },
+  ],
 });

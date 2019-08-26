@@ -1,19 +1,19 @@
 <template>
   <div class="report-list">
-    <h1>QualityDashboard: Reports</h1>
+    <h2>Reports</h2>
     <font-awesome-icon class="action-icon" icon="sync" v-on:click="getGroups()" />
-    <div v-if="message.text" class="alert-message">{{ message.text }}</div>
     <div class="report-group" v-for="group in groups" :key="group.name">
-      <h2>{{ group.name }}</h2>
+      <h3>{{ group.name }}</h3>
       <div class="report-project" v-for="project in group.projects" :key="project.name">
-        <h3>{{ project.name }}</h3>
+        <h4>{{ project.name }}</h4>
         <div class="report-version" v-for="version in project.versions" :key="version.name">
           <div>
-            <h4>{{ version.name }}</h4>
+            <h5>{{ version.name }}</h5>
             <font-awesome-icon
               class="action-icon"
               icon="trash-alt"
               v-on:click="deleteVersion(group.name, project.name, version.name)"
+              v-if="isAuthenticated"
             />
           </div>
           <div class="report-report" v-for="report in version.reports" :key="report.name">
@@ -51,50 +51,66 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import axios from "axios";
+import { EventService } from "../services/EventService";
+import AlertMessages from "../components/AlertMessages.vue";
+import UserService from "../services/UserService";
+import ReportService from "../services/ReportService";
 
 @Component({
   components: {}
 })
 export default class Reports extends Vue {
+  //
   private groups: any[] = [];
 
-  private message = { text: "" };
+  private isAuthenticated = false;
 
   private created(): void {
+    EventService.$on("user-authenticated", (isAuthenticated: boolean) => {
+      this.isAuthenticated = isAuthenticated;
+    });
+    this.checkAuthentication();
+
     this.getGroups();
   }
 
   private async getGroups() {
     try {
-      const response = await axios.get(`${process.env.VUE_APP_BASEPATH}api/reports`);
+      const response = await ReportService.getGroups();
       this.groups = response.data.groups;
-      this.message.text = "";
     } catch (err) {
-      this.message.text = `Error getting reports: ${err.message}`;
+      EventService.$emit(
+        "alert-message",
+        `ERR: Error getting reports: ${err.message}`
+      );
     }
   }
 
   private async deleteVersion(group: string, project: string, version: string) {
     if (confirm(`Delete version ${version}?`)) {
       try {
-        const response = await axios.delete(`api/reports/${group}/${project}/${version}`);
+        await ReportService.deleteVersion(group, project, version);
         this.getGroups();
       } catch (err) {
-        this.message.text = `Error deleting version: ${err.message}`;
+        EventService.$emit(
+          "alert-message",
+          `ERR: Error deleting version (${err.message})`
+        );
       }
     }
+  }
+
+  private async checkAuthentication(): Promise<void> {
+    await UserService.checkAuthentication().catch((err: Error) => {
+      EventService.$emit("alert-message", {
+        text: `ERR: Connection to server failed (${err.message})`,
+        type: "error"
+      });
+    });
   }
 }
 </script>
 <style lang="scss">
-.alert-message {
-  background-color: #fff59d;
-  padding: 2em;
-}
-
-.report-list {
-  padding: 1em;
-}
 .report-project,
 .report-version,
 .report-report {

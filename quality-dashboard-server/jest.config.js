@@ -18,5 +18,6 @@ module.exports = {
         pageTitle: 'Test Report'
       }
     ]
-  ]
+  ],
+  collectCoverageFrom: ['**/*.{js,jsx,ts}', '!**/node_modules/**', '!**/vendor/**']
 };

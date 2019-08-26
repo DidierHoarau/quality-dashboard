@@ -11,6 +11,9 @@ import {
   faPercentage,
   faTrashAlt,
   faSync,
+  faCog,
+  faUser,
+  faTachometerAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -20,6 +23,10 @@ library.add(faExclamationTriangle);
 library.add(faPercentage);
 library.add(faTrashAlt);
 library.add(faSync);
+library.add(faCog);
+library.add(faCog);
+library.add(faUser);
+library.add(faTachometerAlt);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.config.productionTip = false;
