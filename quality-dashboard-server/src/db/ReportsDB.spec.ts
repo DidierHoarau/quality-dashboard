@@ -1,6 +1,6 @@
 import * as fse from 'fs-extra';
-import { ReportsDB } from './ReportsDB';
 import { sandbox } from '../utils-std-ts/test-utils';
+import { ReportsDB } from './ReportsDB';
 
 describe('ReportsDB', () => {
   //

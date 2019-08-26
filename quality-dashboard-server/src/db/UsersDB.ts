@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import * as sha1 from 'sha1';
 import * as uuidv1 from 'uuid/v1';
 import { Config } from '../Config';
+import { JsonTools } from '../utils-std-ts/JsonTools';
 import { Logger } from '../utils-std-ts/logger';
 
 const logger = new Logger('UsersDB');
@@ -10,6 +11,7 @@ const DB_FILE_PATH = `${Config.DB_DIR}/users.json`;
 let usersDB;
 
 export class UsersDB {
+  //
   public static async init(): Promise<void> {
     await fse.ensureDir(Config.DB_DIR);
     if (!fse.existsSync(DB_FILE_PATH)) {
@@ -31,16 +33,16 @@ export class UsersDB {
     await fse.writeJSON(DB_FILE_PATH, usersDB, { spaces: 2 });
   }
 
-  static getByUsername(username: string): Promise<any> {
-    return _.find(usersDB.users, { username });
+  public static getByUsername(username: string): Promise<any> {
+    return JsonTools.clone(_.find(usersDB.users, { username }));
   }
 
   public static async list(): Promise<any> {
-    return JSON.parse(JSON.stringify(usersDB));
+    return JsonTools.clone(usersDB);
   }
 
   public static async delete(): Promise<any> {
-    return JSON.parse(JSON.stringify(usersDB));
+    return JsonTools.clone(usersDB);
   }
 
   public static async add(username: string, password: string): Promise<void> {
@@ -53,6 +55,13 @@ export class UsersDB {
     await fse.writeJSON(DB_FILE_PATH, usersDB, { spaces: 2 });
     logger.info(`User added: ${user.id}`);
     return user.id;
+  }
+
+  public static async updatePassword(id: string, password: string): Promise<void> {
+    const user = _.find(usersDB.users, { id });
+    user.password = sha1(password);
+    await fse.writeJSON(DB_FILE_PATH, usersDB, { spaces: 2 });
+    logger.info(`User updated: ${user.id}`);
   }
 
   public static async deleteVersion(groupName: string, projectName: string, projectVersion: string): Promise<void> {
@@ -72,13 +81,4 @@ export class UsersDB {
     project.versions.splice(versionIndex, 1);
     await fse.writeJSON(DB_FILE_PATH, usersDB, { spaces: 2 });
   }
-}
-
-function arrayFindOrCreate(array: any[], query: any, defaultContent: any): any {
-  let item = _.find(array, query);
-  if (!item) {
-    item = defaultContent;
-    array.push(item);
-  }
-  return item;
 }

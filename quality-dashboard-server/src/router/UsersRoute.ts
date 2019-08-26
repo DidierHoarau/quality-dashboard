@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as sha1 from 'sha1';
-import { ExpressRouterWrapper as ERW } from '../utils-std-ts/express-router-wrapper';
 import { UsersDB } from '../db/UsersDB';
+import { ExpressRouterWrapper as ERW } from '../utils-std-ts/express-router-wrapper';
 import { Logger } from '../utils-std-ts/logger';
 import { Auth } from './Auth';
 
@@ -51,8 +51,19 @@ ERW.route(UsersRoute, 'post', '/login', async (req, res, next, stopAndSend) => {
     stopAndSend(400, 'ERR: "password" missing');
   }
   const user = await UsersDB.getByUsername(req.body.username);
-  if (user.password !== sha1(req.body.password)) {
+  if (!user || user.password !== sha1(req.body.password)) {
     stopAndSend(403, 'ERR: "username/password" incorrect');
   }
   return res.status(201).send({ token: await Auth.generateJWT(user) });
+});
+
+ERW.route(UsersRoute, 'put', '/:id/password', async (req, res, next, stopAndSend) => {
+  if (!req.body.password) {
+    stopAndSend(400, 'ERR: "password" missing');
+  }
+  if (!req.user.authenticated || !req.user.info.user_id !== req.params.id) {
+    stopAndSend(403, 'ERR: authentication error');
+  }
+  await UsersDB.updatePassword(req.params.id, req.body.password);
+  return res.status(201).send({});
 });

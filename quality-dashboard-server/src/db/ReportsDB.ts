@@ -1,6 +1,7 @@
 import * as fse from 'fs-extra';
 import * as _ from 'lodash';
 import { Config } from '../Config';
+import { JsonTools } from '../utils-std-ts/JsonTools';
 import { Logger } from '../utils-std-ts/logger';
 
 const logger = new Logger('ReportsDB');
@@ -28,7 +29,7 @@ export class ReportsDB {
   }
 
   public static async list(): Promise<any> {
-    return JSON.parse(JSON.stringify(reportsDB));
+    return JsonTools.clone(reportsDB);
   }
 
   public static async add(
