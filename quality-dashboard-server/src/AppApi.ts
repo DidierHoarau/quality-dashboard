@@ -21,7 +21,6 @@ export class AppApi {
     });
 
     api.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*');
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
       res.header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE');
       next();
@@ -36,10 +35,11 @@ export class AppApi {
       next();
     });
 
-    api.use((req: any, res: Response, next: NextFunction) => {
+    api.use(async (req: any, res: Response, next: NextFunction) => {
+      req.user = { authenticated: false };
       if (req.headers.authorization) {
         try {
-          req.user = Auth.checkToken(req.headers.authorization.split(' ')[1]);
+          req.user = await Auth.checkToken(req.headers.authorization.split(' ')[1]);
         } catch (err) {
           logger.error(err);
         }

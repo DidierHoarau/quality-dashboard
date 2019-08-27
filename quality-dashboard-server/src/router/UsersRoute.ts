@@ -61,7 +61,7 @@ ERW.route(UsersRoute, 'put', '/:id/password', async (req, res, next, stopAndSend
   if (!req.body.password) {
     stopAndSend(400, 'ERR: "password" missing');
   }
-  if (!req.user.authenticated || !req.user.info.user_id !== req.params.id) {
+  if (!req.user.authenticated || req.user.info.user_id !== req.params.id) {
     stopAndSend(403, 'ERR: authentication error');
   }
   await UsersDB.updatePassword(req.params.id, req.body.password);
