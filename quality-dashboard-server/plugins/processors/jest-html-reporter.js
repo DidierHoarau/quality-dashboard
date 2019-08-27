@@ -4,7 +4,8 @@ module.exports = {
   analyse: async reportFolder => {
     console.log(`Analysing ${reportFolder}`);
     const reportFile = `${reportFolder}/report.html`;
-    const content = (await fse.readFile(reportFile)).toString().replace(/\n/g, '');
+    let content = (await fse.readFile(reportFile)).toString().replace(/\n/g, '');
+    content = content.substring(content.indexOf('id="summary"'), content.indexOf('class="suite-info"'));
     const regexSummaryStr = /id=\"summary\">(.*?)<\/div>.*/;
     const summaryStr = content.match(regexSummaryStr)[1];
     const regexSummary = /.*(\d+) tests.*(\d+) passed.*(\d+) failed.*(\d+) pending.*/;
