@@ -15,3 +15,5 @@ services:
       - /opt/data
   ui:
     image: didierhoarau/quality-dashboard-ui
+    environment:
+      - BASEPATH=/quality-dashboard/
