@@ -1,9 +1,9 @@
 import axios from 'axios';
 import * as request from 'request';
-import * as FormData from 'form-data';
 import * as fs from 'fs';
 import { Config } from './Config';
 
+let authToken;
 describe('/api/reports/', () => {
   //
   test('GET /api/reports/', async () => {
@@ -31,8 +31,17 @@ describe('/api/reports/', () => {
 
   describe('DELETE /api/reports/:groupName/:projectName/:projectVersion/', () => {
     //
-    beforeEach(async () => {
+    beforeAll(async () => {
       await axios.delete(`${Config.APIURL}/reports`);
+      await axios.delete(`${Config.APIURL}/users`);
+      await axios.post(`${Config.APIURL}/users`, {
+        username: 'admin',
+        password: 'admin'
+      });
+      authToken = (await axios.post(`${Config.APIURL}/users/login`, {
+        username: 'admin',
+        password: 'admin'
+      })).data.token;
     });
 
     test('Delete a version', async () => {
@@ -43,10 +52,38 @@ describe('/api/reports/', () => {
       let response = await axios.get(`${Config.APIURL}/reports`);
       expect(response.data.groups[0].projects[0].versions).toHaveLength(1);
       response = await axios.delete(
-        `${Config.APIURL}/reports/quality-dashboard/server/dev`
+        `${Config.APIURL}/reports/quality-dashboard/server/dev`,
+        {
+          headers: {
+            authorization: `Bearer ${authToken}`
+          }
+        }
       );
       response = await axios.get(`${Config.APIURL}/reports/`);
-      expect(response.data.groups[0].projects[0].versions).toHaveLength(0);
+      expect(response.data.groups).toHaveLength(0);
+    });
+
+    test('Delete a version among 2', async () => {
+      await sendFile(
+        `${__dirname}/../samples/test-report.html`,
+        `${Config.APIURL}/reports/quality-dashboard/server/dev/integration-test/jest-html-reporter`
+      );
+      await sendFile(
+        `${__dirname}/../samples/test-report.html`,
+        `${Config.APIURL}/reports/quality-dashboard/server/dev-2/integration-test/jest-html-reporter`
+      );
+      let response = await axios.get(`${Config.APIURL}/reports`);
+      expect(response.data.groups[0].projects[0].versions).toHaveLength(2);
+      response = await axios.delete(
+        `${Config.APIURL}/reports/quality-dashboard/server/dev`,
+        {
+          headers: {
+            authorization: `Bearer ${authToken}`
+          }
+        }
+      );
+      response = await axios.get(`${Config.APIURL}/reports/`);
+      expect(response.data.groups[0].projects[0].versions).toHaveLength(1);
     });
   });
 });

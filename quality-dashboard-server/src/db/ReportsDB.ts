@@ -20,6 +20,7 @@ export class ReportsDB {
     if (!reportsDB.groups) {
       reportsDB.groups = [];
     }
+    cleanGroups();
     await fse.writeJSON(DB_FILE_PATH, reportsDB, { spaces: 2 });
   }
 
@@ -69,8 +70,25 @@ export class ReportsDB {
     }
     logger.info(`Deleting version: ${groupName}/${projectName}/${projectVersion}`);
     project.versions.splice(versionIndex, 1);
+    cleanGroups();
     await fse.writeJSON(DB_FILE_PATH, reportsDB, { spaces: 2 });
   }
+}
+
+function cleanGroups() {
+  const newGroups = [];
+  for (const group of reportsDB.groups) {
+    const newProjects = [];
+    for (const project of group.projects) {
+      if (project.versions.length > 0) {
+        newProjects.push(project);
+      }
+    }
+    if (newProjects.length > 0) {
+      newGroups.push({ name: group.name, projects: newProjects });
+    }
+  }
+  reportsDB.groups = newGroups;
 }
 
 function arrayFindOrCreate(array: any[], query: any, defaultContent: any): any {

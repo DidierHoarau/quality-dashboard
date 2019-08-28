@@ -28,7 +28,7 @@
 
     [frontends.quality-dashboard-server.routes]
         [frontends.quality-dashboard-server.routes.route0]
-        rule = "PathPrefix:/api;AddPrefix:/api;"
+        rule = "PathPrefixStrip:/quality-dashboard/api;AddPrefix:/api;"
 
   [frontends.quality-dashboard-ui]
     entryPoints = ["http"]
@@ -36,4 +36,4 @@
 
     [frontends.quality-dashboard-ui.routes]
         [frontends.quality-dashboard-ui.routes.route0]
-        rule = "PathPrefix:/;"
+        rule = "PathPrefixStrip:/quality-dashboard;"
