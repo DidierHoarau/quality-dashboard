@@ -1,6 +1,6 @@
 {
-  "name": "quality-dashboard-ui",
-  "short_name": "quality-dashboard-ui",
+  "name": "quality-dashboard",
+  "short_name": "QualityDashboard",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
