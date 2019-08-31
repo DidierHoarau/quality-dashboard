@@ -6,10 +6,10 @@ module.exports = {
     const reportFile = `${reportFolder}/report.html`;
     let content = (await fse.readFile(reportFile)).toString().replace(/\n/g, '');
     content = content.substring(content.indexOf('id="summary"'), content.indexOf('class="suite-info"'));
-    const regexSummaryStr = /id=\"summary\">(.*?)<\/div>.*/;
-    const summaryStr = content.match(regexSummaryStr)[1];
-    const regexSummary = /.*(\d+) tests.*(\d+) passed.*(\d+) failed.*(\d+) pending.*/;
-    const summary = summaryStr.match(regexSummary);
+    console.log(content);
+    const regexSummary = /.*?(\d+) tests.*?(\d+) passed.*?(\d+) failed.*?(\d+) pending/;
+    const summary = content.match(regexSummary);
+    console.log(summary);
     return {
       link: 'report.html',
       success: Number(summary[2]),
