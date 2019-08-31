@@ -20,8 +20,12 @@ echo "Report Server: ${UPLOAD_SERVER}"
 cd "${APP_DIR}/quality-dashboard-server"
 npm run test
 tar czf coverage.tar.gz coverage
-curl -X POST -F report=@"./coverage.tar.gz" ${UPLOAD_SERVER}/api/reports/quality-dashboard/server/master/unit-test-coverage/lcov-coverage
-curl -X POST -F report=@"./test-report.html" ${UPLOAD_SERVER}/api/reports/quality-dashboard/server/master/unit-test/jest-html-reporter
+curl -X POST \
+   -F report=@"./coverage.tar.gz" \
+   ${UPLOAD_SERVER}/api/reports/quality-dashboard/server/master/unit-test-coverage/lcov-coverage
+curl -X POST \
+    -F report=@"./test-report.html" \
+    ${UPLOAD_SERVER}/api/reports/quality-dashboard/server/master/unit-test/jest-html-reporter
 rm -f ./coverage.tar.gz
 
 
@@ -30,4 +34,15 @@ rm -f ./coverage.tar.gz
 # --------------------------------------------------
 cd "${APP_DIR}/test/integration"
 npm run test
-curl -X POST -F report=@"./test-report.html" ${UPLOAD_SERVER}/api/reports/quality-dashboard/integration/master/integration-test/jest-html-reporter
+curl -X POST \
+    -F report=@"./test-report.html" \
+    ${UPLOAD_SERVER}/api/reports/quality-dashboard/integration/master/integration-test/jest-html-reporter
+
+
+# --------------------------------------------------
+# Test Json Processor
+# --------------------------------------------------
+curl -X POST \
+    -d '{"link":"https://github.com/DidierHoarau/quality-dashboard", "success": 10, "error": 9, "warning": 8, "total": 27, "coverage": 80 }' \
+    -H "Content-Type: application/json" \
+    ${UPLOAD_SERVER}/api/reports/quality-dashboard/integration/master/test-processors/json

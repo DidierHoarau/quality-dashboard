@@ -20,8 +20,10 @@
             <div class="report-report" v-for="report in version.reports" :key="report.name">
               <div class="report-title">
                 <a
-                  :href="'./api/reports_data/'+group.name+'/'+project.name+'/'+version.name+'/'+report.name+'/report/'+report.result.link"
+                  v-if="report.result.link"
+                  :href="getReportUrl(group.name, project.name, version.name, report.name, report.result.link)"
                 >{{ report.name }}</a>
+                <span v-else>{{ report.name }}</span>
               </div>
               <div class="report-metrics">
                 <span v-if="report.result.success" class="report-metric quality-success">
@@ -37,7 +39,7 @@
                   x{{ report.result.error }}
                 </span>
                 <span v-if="report.result.coverage" class="report-metric">
-                  {{ report.result.coverage.replace('%','') }}
+                  {{ getCoverage(report.result.coverage) }}
                   <font-awesome-icon icon="percentage" />
                 </span>
                 <span
@@ -113,6 +115,40 @@ export default class Reports extends Vue {
         type: "error"
       });
     });
+  }
+
+  private getCoverage(coverageInput: any): string {
+    if (typeof coverageInput === "number") {
+      return coverageInput.toString();
+    } else if (typeof coverageInput === "string") {
+      return coverageInput.replace("%", "");
+    }
+    return coverageInput;
+  }
+
+  private getReportUrl(
+    groupName: string,
+    projectName: string,
+    versionName: string,
+    reportName: string,
+    reportLink: string
+  ): string {
+    if (reportLink.indexOf("http") === 0) {
+      return reportLink;
+    } else {
+      return (
+        "./api/reports_data/" +
+        groupName +
+        "/" +
+        projectName +
+        "/" +
+        versionName +
+        "/" +
+        reportName +
+        "/report/" +
+        reportLink
+      );
+    }
   }
 
   private dateToRelative(date: Date): string {

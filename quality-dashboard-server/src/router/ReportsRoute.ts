@@ -27,22 +27,25 @@ ERW.route(
   'post',
   '/:groupName/:projectName/:projectVersion/:reportName/:processorType',
   async (req, res) => {
-    const reportFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${
-      req.params.projectVersion
-    }/${req.params.reportName}`;
+    const reportFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${req.params.projectVersion}/${req.params.reportName}`;
     if (fse.existsSync(reportFolder)) {
       await fse.remove(reportFolder);
     }
     await fse.ensureDir(reportFolder);
-    const reportName = (req as any).files.report.name;
-    if (path.extname(reportName) === '.gz') {
-      await (req as any).files.report.mv(`${reportFolder}/${reportName}`);
-      await extractTo(`${reportFolder}/${(req as any).files.report.name}`, `${reportFolder}/report`);
-    } else if (path.extname(reportName) === '.html') {
-      await fse.ensureDir(`${reportFolder}/report`);
-      await (req as any).files.report.mv(`${reportFolder}/report/report.html`);
+    if ((req as any).files && (req as any).files.report) {
+      const reportName = (req as any).files.report.name;
+      if (path.extname(reportName) === '.gz') {
+        await (req as any).files.report.mv(`${reportFolder}/${reportName}`);
+        await extractTo(`${reportFolder}/${(req as any).files.report.name}`, `${reportFolder}/report`);
+      } else if (path.extname(reportName) === '.html') {
+        await fse.ensureDir(`${reportFolder}/report`);
+        await (req as any).files.report.mv(`${reportFolder}/report/report.html`);
+      } else {
+        throw new Error('Wrong report extension');
+      }
     } else {
-      throw new Error('Wrong report extension');
+      await fse.ensureDir(`${reportFolder}/report`);
+      await fse.writeJson(`${reportFolder}/report/data.json`, req.body);
     }
     let processor;
     if (fse.existsSync(`${Config.PROCESSOR_DIR_USER}/${req.params.processorType}.js`)) {
@@ -72,9 +75,7 @@ ERW.route(
 );
 
 ERW.route(ReportsRoute, 'delete', '/:groupName/:projectName/:projectVersion', async (req, res, next, stopAndSend) => {
-  const versionFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${
-    req.params.projectVersion
-  }`;
+  const versionFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${req.params.projectVersion}`;
   if (!req.user.authenticated) {
     stopAndSend(403, 'ERR: authentication error');
   }
