@@ -75,7 +75,7 @@ export class ReportsDB {
   }
 }
 
-function cleanGroups() {
+function cleanGroups(): void {
   const newGroups = [];
   for (const group of reportsDB.groups) {
     const newProjects = [];
