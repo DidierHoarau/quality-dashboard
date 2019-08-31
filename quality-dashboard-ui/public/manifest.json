@@ -1,6 +1,6 @@
 {
-  "name": "quality-dashboard-ui",
-  "short_name": "quality-dashboard-ui",
+  "name": "quality-dashboard",
+  "short_name": "QualityDashboard",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
@@ -16,5 +16,5 @@
   "start_url": "./",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#4DBA87"
+  "theme_color": "#3949ab"
 }

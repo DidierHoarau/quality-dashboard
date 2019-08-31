@@ -16,31 +16,37 @@
               v-if="isAuthenticated"
             />
           </div>
-          <div class="report-report" v-for="report in version.reports" :key="report.name">
-            <a
-              :href="'./api/reports_data/'+group.name+'/'+project.name+'/'+version.name+'/'+report.name+'/report/'+report.result.link"
-            >{{ report.name }}</a>
-            <span class="report-metric">{{ new Date(report.date).toLocaleString() }}</span>
-            <span
-              v-if="report.result.total"
-              class="report-metric"
-            >(Total: {{ report.result.total }})</span>
-            <span v-if="report.result.success" class="report-metric quality-success">
-              <font-awesome-icon icon="check-circle" />
-              x{{ report.result.success }}
-            </span>
-            <span v-if="report.result.warning" class="report-metric quality-warning">
-              <font-awesome-icon icon="exclamation-triangle" />
-              x{{ report.result.warning }}
-            </span>
-            <span v-if="report.result.error" class="report-metric quality-error">
-              <font-awesome-icon icon="bomb" />
-              x{{ report.result.error }}
-            </span>
-            <span v-if="report.result.coverage" class="report-metric">
-              {{ report.result.coverage.replace('%','') }}
-              <font-awesome-icon icon="percentage" />
-            </span>
+          <div class="report-reports">
+            <div class="report-report" v-for="report in version.reports" :key="report.name">
+              <div class="report-title">
+                <a
+                  :href="'./api/reports_data/'+group.name+'/'+project.name+'/'+version.name+'/'+report.name+'/report/'+report.result.link"
+                >{{ report.name }}</a>
+              </div>
+              <div class="report-metrics">
+                <span v-if="report.result.success" class="report-metric quality-success">
+                  <font-awesome-icon icon="check-circle" />
+                  x{{ report.result.success }}
+                </span>
+                <span v-if="report.result.warning" class="report-metric quality-warning">
+                  <font-awesome-icon icon="exclamation-triangle" />
+                  x{{ report.result.warning }}
+                </span>
+                <span v-if="report.result.error" class="report-metric quality-error">
+                  <font-awesome-icon icon="bomb" />
+                  x{{ report.result.error }}
+                </span>
+                <span v-if="report.result.coverage" class="report-metric">
+                  {{ report.result.coverage.replace('%','') }}
+                  <font-awesome-icon icon="percentage" />
+                </span>
+                <span
+                  v-if="report.result.total"
+                  class="report-metric"
+                >All x{{ report.result.total }}</span>
+              </div>
+              <div class="report-date">{{ dateToRelative(new Date(report.date)) }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -108,27 +114,87 @@ export default class Reports extends Vue {
       });
     });
   }
+
+  private dateToRelative(date: Date): string {
+    const msPerMinute = 60 * 1000;
+    const msPerHour = msPerMinute * 60;
+    const msPerDay = msPerHour * 24;
+    const msPerMonth = msPerDay * 30;
+    const msPerYear = msPerDay * 365;
+
+    const elapsed = new Date().getTime() - date.getTime();
+
+    if (elapsed < msPerMinute) {
+      return Math.round(elapsed / 1000) + " sec. ago";
+    } else if (elapsed < msPerHour) {
+      return Math.round(elapsed / msPerMinute) + " min. ago";
+    } else if (elapsed < msPerDay) {
+      return Math.round(elapsed / msPerHour) + " h. ago";
+    } else if (elapsed < msPerMonth) {
+      return Math.round(elapsed / msPerDay) + " days ago";
+    } else if (elapsed < msPerYear) {
+      return Math.round(elapsed / msPerMonth) + " months ago";
+    } else {
+      return Math.round(elapsed / msPerYear) + " years ago";
+    }
+  }
 }
 </script>
 <style lang="scss">
 .report-project,
 .report-version,
-.report-report {
+.report-reports {
   padding-left: 2vw;
 }
 .report-version {
   border-top: 2px solid;
 }
-.report-metric {
-  float: right;
-  padding-right: 2em;
+.report-reports {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 2em;
+}
+.report-report {
+  width: 10em;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+  padding: 0.4em 0.8em;
+  margin-bottom: 0.8em;
+  margin-right: 0.8em;
+  background-color: #cfd8dc;
+}
+.report-title {
   font-size: 90%;
+  text-align: center;
+  width: 100%;
+  border-bottom: 2px dotted #888;
+  padding-bottom: 0.2em;
+  margin-bottom: 0.6em;
+}
+.report-title a:any-link {
+  color: #0d47a1;
+  word-wrap: break-word;
+}
+.report-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-between;
+}
+.report-metric {
+  font-size: 90%;
+  width: 30%;
+}
+.report-date {
+  font-size: 70%;
+  text-align: right;
+  width: 100%;
+  color: #888;
 }
 .quality-success {
   color: #43a047;
 }
 .quality-warning {
-  color: #ffb300;
+  color: #ff7043;
 }
 .quality-error {
   color: #e53935;
