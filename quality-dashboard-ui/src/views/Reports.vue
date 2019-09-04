@@ -77,21 +77,15 @@ export default class Reports extends Vue {
     EventService.$on("user-authenticated", (isAuthenticated: boolean) => {
       this.isAuthenticated = isAuthenticated;
     });
+    EventService.$on("report-groups-data", (groupData: any) => {
+      this.groups = groupData.data.groups;
+    });
     this.checkAuthentication();
-
     this.getGroups();
   }
 
   private async getGroups() {
-    try {
-      const response = await ReportService.getGroups();
-      this.groups = response.data.groups;
-    } catch (err) {
-      EventService.$emit(
-        "alert-message",
-        `ERR: Error getting reports: ${err.message}`
-      );
-    }
+    await ReportService.requestGroupsUpdate();
   }
 
   private async deleteVersion(group: string, project: string, version: string) {
@@ -110,10 +104,10 @@ export default class Reports extends Vue {
 
   private async checkAuthentication(): Promise<void> {
     await UserService.checkAuthentication().catch((err: Error) => {
-      EventService.$emit("alert-message", {
-        text: `ERR: Connection to server failed (${err.message})`,
-        type: "error"
-      });
+      EventService.$emit(
+        "alert-message",
+        `ERR: Connection to server failed (${err.message})`
+      );
     });
   }
 

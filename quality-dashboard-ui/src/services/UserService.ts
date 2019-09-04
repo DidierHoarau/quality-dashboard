@@ -1,5 +1,4 @@
 import axios from "axios";
-import router from "../router";
 import { EventService } from "./EventService";
 
 export default class UserService {

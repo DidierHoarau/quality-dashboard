@@ -61,10 +61,10 @@ export default class Reports extends Vue {
 
   private async checkInitialization() {
     UserService.checkInitialization().catch((err: Error) => {
-      EventService.$emit("alert-message", {
-        text: `ERR: Connection to server failed (${err.message})`,
-        type: "error"
-      });
+      EventService.$emit(
+        "alert-message",
+        `ERR: Connection to server failed (${err.message})`
+      );
     });
   }
 
