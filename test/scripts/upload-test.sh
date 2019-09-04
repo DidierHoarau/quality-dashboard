@@ -46,3 +46,13 @@ curl -X POST \
     -d '{"link":"https://github.com/DidierHoarau/quality-dashboard", "success": 10, "error": 9, "warning": 8, "total": 27, "coverage": 80 }' \
     -H "Content-Type: application/json" \
     ${UPLOAD_SERVER}/api/reports/quality-dashboard/integration/master/test-processors/json
+
+curl -X POST \
+    -d '{"success": 10, "error": 9, "warning": 8, "total": 27, "coverage": 80 }' \
+    -H "Content-Type: application/json" \
+    ${UPLOAD_SERVER}/api/reports/quality-dashboard/integration/master/test-processors-2/json
+
+curl -X POST \
+    -d '{"link":"./TEST/", "success": 10, "error": 9, "warning": 8, "total": 27, "coverage": 80 }' \
+    -H "Content-Type: application/json" \
+    ${UPLOAD_SERVER}/api/reports/quality-dashboard/integration/master/test-processors-3/json
