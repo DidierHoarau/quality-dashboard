@@ -35,4 +35,14 @@ curl -X POST \
 curl -X POST \
     -d '{"link":"./TEST/", "success": 10, "error": 9, "warning": 8, "total": 27, "coverage": 80, "duration": 1038 }' \
     -H "Content-Type: application/json" \
-    ${UPLOAD_SERVER}/api/reports/quality-dashboard/integration-2/master/test-processors-3/json
+    ${UPLOAD_SERVER}/api/reports/quality-dashboard/integration-2/master/test-processors-4/json
+
+curl -X POST \
+    -d '{"link":"./TEST/", "success": 10, "duration": 1038 }' \
+    -H "Content-Type: application/json" \
+    ${UPLOAD_SERVER}/api/reports/quality-dashboard/integration-2/master/test-processors-5/json
+
+curl -X POST \
+    -d '{"link":"./TEST/", "success": 10 }' \
+    -H "Content-Type: application/json" \
+    ${UPLOAD_SERVER}/api/reports/quality-dashboard/integration-2/master/test-processors-6/json
