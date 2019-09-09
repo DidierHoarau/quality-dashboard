@@ -46,8 +46,10 @@
                   v-if="report.result.total"
                   class="report-metric"
                 >All x{{ report.result.total }}</span>
-                <div class="report-duration">{{ displayDuration(report.result.duration) }}</div>
-                <div class="report-date">{{ dateToRelative(new Date(report.date)) }}</div>
+                <div class="report-timing">
+                  <div class="report-duration">{{ displayDuration(report.result.duration) }}</div>
+                  <div class="report-date">{{ dateToRelative(new Date(report.date)) }}</div>
+                </div>
               </div>
             </div>
           </div>
@@ -232,17 +234,20 @@ export default class Reports extends Vue {
 .report-metric {
   font-size: 90%;
   width: 30%;
+  padding-bottom: 0.4em;
+}
+.report-timing {
+  font-size: 70%;
+  width: 100%;
+  color: #888;
+  display: flex;
 }
 .report-duration {
-  font-size: 70%;
   width: 50%;
-  color: #888;
 }
 .report-date {
-  font-size: 70%;
   text-align: right;
   width: 50%;
-  color: #888;
 }
 .quality-success {
   color: #43a047;
