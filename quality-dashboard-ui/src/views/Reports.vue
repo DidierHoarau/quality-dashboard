@@ -46,8 +46,9 @@
                   v-if="report.result.total"
                   class="report-metric"
                 >All x{{ report.result.total }}</span>
+                <div class="report-duration">{{ displayDuration(report.result.duration) }}</div>
+                <div class="report-date">{{ dateToRelative(new Date(report.date)) }}</div>
               </div>
-              <div class="report-date">{{ dateToRelative(new Date(report.date)) }}</div>
             </div>
           </div>
         </div>
@@ -168,6 +169,24 @@ export default class Reports extends Vue {
       return Math.round(elapsed / msPerYear) + " years ago";
     }
   }
+
+  private displayDuration(duration: number): string {
+    if (!duration) {
+      return "";
+    } else if (typeof duration !== "number") {
+      return duration;
+    } else if (duration < 1000) {
+      return Math.round(duration) + " ms";
+    } else if (duration < 60 * 1000) {
+      return Math.round(duration / 1000) + " s";
+    } else if (duration < 3600 * 1000) {
+      return Math.round(duration / (60 * 1000)) + " min";
+    } else if (duration < 24 * 3600 * 1000) {
+      return Math.round(duration / (3600 * 1000)) + " h";
+    } else {
+      return Math.round(duration / (24 * 3600 * 1000)) + " h";
+    }
+  }
 }
 </script>
 <style lang="scss">
@@ -214,10 +233,15 @@ export default class Reports extends Vue {
   font-size: 90%;
   width: 30%;
 }
+.report-duration {
+  font-size: 70%;
+  width: 50%;
+  color: #888;
+}
 .report-date {
   font-size: 70%;
   text-align: right;
-  width: 100%;
+  width: 50%;
   color: #888;
 }
 .quality-success {
