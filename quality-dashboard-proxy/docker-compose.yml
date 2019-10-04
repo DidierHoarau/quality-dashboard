@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  reverse-proxy:
+  proxy:
     build: .
     image: ${DOCKER_REGISTRY}/${REGISTRY_NAMESPACE}/${SERVICE}:${SERVICE_VERSION}
     ports:

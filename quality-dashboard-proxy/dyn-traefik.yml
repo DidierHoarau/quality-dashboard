@@ -1,0 +1,20 @@
+http:
+  routers:
+    router-api:
+      rule: 'PathPrefix(`/api`)'
+      service: quality-dashboard-server
+
+    router-ui:
+      rule: 'PathPrefix(`/`)'
+      service: quality-dashboard-ui
+
+  services:
+    quality-dashboard-server:
+      loadBalancer:
+        servers:
+          - url: http://quality-dashboard-server
+
+    quality-dashboard-ui:
+      loadBalancer:
+        servers:
+          - url: http://quality-dashboard-ui
