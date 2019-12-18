@@ -1,0 +1,122 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${SERVICE}-proxy
+  labels:
+    app: ${SERVICE}-proxy
+  annotations:
+    monitoring: "true"
+    service_id: "${SERVICE}-proxy:${SERVICE_VERSION}"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: ${SERVICE}-proxy
+  template:
+    metadata:
+      labels:
+        app: ${SERVICE}-proxy
+    spec:
+      containers:
+        - image: ${DOCKER_REGISTRY}/${REGISTRY_NAMESPACE}/${SERVICE}-proxy:${SERVICE_VERSION}
+          args: ["--providers.file.filename=/etc/traefik/dyn-traefik.yml"]
+          name: ${SERVICE}-proxy
+          ports:
+            - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${SERVICE}-server
+  labels:
+    app: ${SERVICE}-server
+  annotations:
+    monitoring: "true"
+    service_id: "${SERVICE}-server:${SERVICE_VERSION}"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: ${SERVICE}-server
+  template:
+    metadata:
+      labels:
+        app: ${SERVICE}-server
+    spec:
+      containers:
+        - image: ${DOCKER_REGISTRY}/${REGISTRY_NAMESPACE}/${SERVICE}-server:${SERVICE_VERSION}
+          name: ${SERVICE}-server
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /opt/data
+              name: pod-volume
+      volumes:
+        - name: pod-volume
+          hostPath:
+            path: /mnt/nas/docker-data/quality-dashboard
+            type: Directory
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${SERVICE}-ui
+  labels:
+    app: ${SERVICE}-ui
+  annotations:
+    monitoring: "true"
+    service_id: "${SERVICE}-ui:${SERVICE_VERSION}"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: ${SERVICE}-ui
+  template:
+    metadata:
+      labels:
+        app: ${SERVICE}-ui
+    spec:
+      containers:
+        - image: didierhoarau/quality-dashboard-ui
+          name: ${SERVICE}-ui
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${SERVICE}-proxy
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    app: ${SERVICE}-proxy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${SERVICE}-server
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    app: ${SERVICE}-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${SERVICE}-ui
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    app: ${SERVICE}-ui
