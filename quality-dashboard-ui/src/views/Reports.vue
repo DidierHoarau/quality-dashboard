@@ -1,12 +1,24 @@
 <template>
   <div class="report-list">
     <h2>Reports</h2>
-    <font-awesome-icon class="action-icon" icon="sync" v-on:click="getGroups()" />
+    <font-awesome-icon
+      class="action-icon"
+      icon="sync"
+      v-on:click="getGroups()"
+    />
     <div class="report-group" v-for="group in groups" :key="group.name">
       <h3>{{ group.name }}</h3>
-      <div class="report-project" v-for="project in group.projects" :key="project.name">
+      <div
+        class="report-project"
+        v-for="project in group.projects"
+        :key="project.name"
+      >
         <h4>{{ project.name }}</h4>
-        <div class="report-version" v-for="version in project.versions" :key="version.name">
+        <div
+          class="report-version"
+          v-for="version in project.versions"
+          :key="version.name"
+        >
           <div>
             <h5>{{ version.name }}</h5>
             <font-awesome-icon
@@ -17,24 +29,46 @@
             />
           </div>
           <div class="report-reports">
-            <div class="report-report" v-for="report in version.reports" :key="report.name">
+            <div
+              class="report-report"
+              v-for="report in version.reports"
+              :key="report.name"
+            >
               <div class="report-title">
                 <a
                   v-if="report.result.link"
-                  :href="getReportUrl(group.name, project.name, version.name, report.name, report.result.link)"
-                >{{ report.name }}</a>
+                  :href="
+                    getReportUrl(
+                      group.name,
+                      project.name,
+                      version.name,
+                      report.name,
+                      report.result.link
+                    )
+                  "
+                  >{{ report.name }}</a
+                >
                 <span v-else>{{ report.name }}</span>
               </div>
               <div class="report-metrics">
-                <span v-if="report.result.success" class="report-metric quality-success">
+                <span
+                  v-if="report.result.success"
+                  class="report-metric quality-success"
+                >
                   <font-awesome-icon icon="check-circle" />
                   x{{ report.result.success }}
                 </span>
-                <span v-if="report.result.warning" class="report-metric quality-warning">
+                <span
+                  v-if="report.result.warning"
+                  class="report-metric quality-warning"
+                >
                   <font-awesome-icon icon="exclamation-triangle" />
                   x{{ report.result.warning }}
                 </span>
-                <span v-if="report.result.error" class="report-metric quality-error">
+                <span
+                  v-if="report.result.error"
+                  class="report-metric quality-error"
+                >
                   <font-awesome-icon icon="bomb" />
                   x{{ report.result.error }}
                 </span>
@@ -42,13 +76,16 @@
                   {{ getCoverage(report.result.coverage) }}
                   <font-awesome-icon icon="percentage" />
                 </span>
-                <span
-                  v-if="report.result.total"
-                  class="report-metric"
-                >All x{{ report.result.total }}</span>
+                <span v-if="report.result.total" class="report-metric"
+                  >All x{{ report.result.total }}</span
+                >
                 <div class="report-timing">
-                  <div class="report-duration">{{ displayDuration(report.result.duration) }}</div>
-                  <div class="report-date">{{ dateToRelative(new Date(report.date)) }}</div>
+                  <div class="report-duration">
+                    {{ displayDuration(report.result.duration) }}
+                  </div>
+                  <div class="report-date">
+                    {{ dateToRelative(new Date(report.date)) }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -195,7 +232,7 @@ export default class Reports extends Vue {
 .report-project,
 .report-version,
 .report-reports {
-  padding-left: 2vw;
+  margin-left: 2vw;
 }
 .report-version {
   border-top: 2px solid;
@@ -261,5 +298,38 @@ export default class Reports extends Vue {
 .action-icon {
   float: right;
   margin-top: -3em;
+}
+
+@media screen and (min-width: 801px) and (max-width: 1000px) {
+  .report-reports {
+    grid-template-columns: 1fr 1fr 1fr;
+    display: grid;
+    width: calc(100% - 6vw);
+  }
+  .report-report {
+    width: calc(100% - 6vw);
+  }
+}
+
+@media screen and (min-width: 501px) and (max-width: 800px) {
+  .report-reports {
+    grid-template-columns: 1fr 1fr;
+    display: grid;
+    width: calc(100% - 6vw);
+  }
+  .report-report {
+    width: calc(100% - 8vw);
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .report-reports {
+    grid-template-columns: 1fr;
+    display: grid;
+    width: calc(100% - 6vw);
+  }
+  .report-report {
+    width: calc(100% - 2em);
+  }
 }
 </style>

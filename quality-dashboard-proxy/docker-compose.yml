@@ -1,13 +1,15 @@
-version: '3.7'
+version: "3.7"
 
 services:
   proxy:
     build: .
     image: ${DOCKER_REGISTRY}/${REGISTRY_NAMESPACE}/${SERVICE}:${SERVICE_VERSION}
+    command:
+      - "--providers.file.filename=/etc/traefik/dyn-traefik.yml"
     ports:
-      - '80:80'
-      - '443:443'
-      - '8080:8080'
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
     networks:
       - quality-dashboard-network
 
