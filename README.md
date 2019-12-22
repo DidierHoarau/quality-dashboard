@@ -62,12 +62,10 @@ curl -X POST \
 
 # JSON (alternate)
 curl -X POST \
-    -H "Content-Type: application/json" \
     http://localhost/quality-dashboard/api/reports/qa-dash/server/1.0.0/test-json-alt/json?data_json=%7B\"success\"%3A10,\"error\"%3A9,\"warning\"%3A8,\"total\"%3A27,\"coverage\"%3A80%7D
 
 # JSON and Html Report
 curl -X POST \
-    -H "Content-Type: application/json" \
     -F report=@"./report.html" \
     http://localhost/quality-dashboard/api/reports/qa-dash/server/1.0.0/test-json-file/json?data_json=%7B\"success\"%3A10,\"error\"%3A9,\"warning\"%3A8,\"total\"%3A27,\"coverage\"%3A80%7D
 
