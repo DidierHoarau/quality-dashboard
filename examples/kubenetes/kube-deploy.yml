@@ -4,9 +4,6 @@ metadata:
   name: ${SERVICE}-proxy
   labels:
     app: ${SERVICE}-proxy
-  annotations:
-    monitoring: "true"
-    service_id: "${SERVICE}-proxy:${SERVICE_VERSION}"
 spec:
   replicas: 1
   revisionHistoryLimit: 1

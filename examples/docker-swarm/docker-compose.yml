@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   proxy:
@@ -6,8 +6,10 @@ services:
       context: .
       dockerfile: Dockerfile-proxy
     image: ${DOCKER_REGISTRY}/${REGISTRY_NAMESPACE}/quality-dashboard-proxy
+    command:
+      - "--providers.file.filename=/etc/traefik/dyn-traefik.yml"
     ports:
-      - '80:80'
+      - "80:80"
     networks:
       - quality-dashboard-network
 

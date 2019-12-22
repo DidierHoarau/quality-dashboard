@@ -1,14 +1,14 @@
 # Quality-Dashboard
 
-This project is born out of the need to centralise reports that are generated in a typical CI/CD flow: unit test, coverage, integration test, UI tests, ...
+This project is born out of the need to centralise reports that are generated in a typical CI/CD flow: unit tests, coverage, integration tests, UI tests, ...
 
 This is made to be as simple and as light as possible.
 
-![alt text](https://github.com/DidierHoarau/quality-dashboard/raw/master/_shared/img/screenshot.png 'Quality Dashboard Screenshot')
+![alt text](https://github.com/DidierHoarau/quality-dashboard/raw/master/_shared/img/screenshot.png "Quality Dashboard Screenshot")
 
 ## Installation
 
-The recommended aproach is to deploy the servces as Docker container. A deployment is composed of the following services:
+The recommended aproach is to deploy the services as Docker container. A deployment is composed of the following services:
 
 - Server: this is the backend service holding the data and the reports
 - UI: this is the web frontend to display the reports
@@ -18,7 +18,7 @@ Depending on your preferred deployment target, You will find examples of deploym
 
 - Docker: [examples/docker]
 - Docker Swarm [examples/docker-swarm]
-- Kunernetes: [examples/kubernetes]
+- Kubernetes: [examples/kubernetes]
 
 ## User Interface
 
@@ -52,7 +52,25 @@ curl -X POST \
 # Send File
 curl -X POST \
     -F report=@test-report.html \
-    http://localhost/quality-dashboard/api/reports/qa-dash//server/1.0.0/unit-test/jest-html-reporter
+    http://localhost/quality-dashboard/api/reports/qa-dash/server/1.0.0/unit-test/jest-html-reporter
+
+# JSON
+curl -X POST \
+    -d '{"link":"https://github.com/DidierHoarau/quality-dashboard", "success": 10, "error": 9, "warning": 8, "total": 27, "coverage": 80 }' \
+    -H "Content-Type: application/json" \
+    http://localhost/quality-dashboard/api/reports/qa-dash/server/1.0.0/test-json/json
+
+# JSON (alternate)
+curl -X POST \
+    -H "Content-Type: application/json" \
+    http://localhost/quality-dashboard/api/reports/qa-dash/server/1.0.0/test-json-alt/json?data_json=%7B\"success\"%3A10,\"error\"%3A9,\"warning\"%3A8,\"total\"%3A27,\"coverage\"%3A80%7D
+
+# JSON and Html Report
+curl -X POST \
+    -H "Content-Type: application/json" \
+    -F report=@"./report.html" \
+    http://localhost/quality-dashboard/api/reports/qa-dash/server/1.0.0/test-json-file/json?data_json=%7B\"success\"%3A10,\"error\"%3A9,\"warning\"%3A8,\"total\"%3A27,\"coverage\"%3A80%7D
+
 
 ```
 
@@ -86,12 +104,12 @@ module.exports = {
   analyse: async reportFolder => {
     console.log(`Analysing ${reportFolder}`);
     return {
-      link: 'report.html',
+      link: "report.html",
       success: 0,
       warning: 0,
       error: 0,
       total: 0,
-      coverage: '0%'
+      coverage: "0%"
     };
   }
 };
