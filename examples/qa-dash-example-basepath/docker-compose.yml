@@ -1,20 +1,22 @@
-version: "3.7"
+version: '3.7'
 
 services:
-  reverse-proxy:
+  proxy:
     build:
       context: .
       dockerfile: Dockerfile-proxy
     command:
-      - "--providers.file.filename=/etc/traefik/dyn-traefik.yml"
+      - '--providers.file.filename=/etc/traefik/dyn-traefik.yml'
     ports:
-      - "80:80"
+      - '80:80'
+
   server:
     build:
       context: .
       dockerfile: Dockerfile-server
     volumes:
       - /opt/data
+
   ui:
     image: didierhoarau/quality-dashboard-ui
     environment:

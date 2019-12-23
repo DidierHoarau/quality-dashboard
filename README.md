@@ -4,7 +4,7 @@ This project is born out of the need to centralise reports that are generated in
 
 This is made to be as simple and as light as possible.
 
-![alt text](https://github.com/DidierHoarau/quality-dashboard/raw/master/_shared/img/screenshot.png "Quality Dashboard Screenshot")
+![alt text](https://github.com/DidierHoarau/quality-dashboard/raw/master/_shared/img/screenshot.png 'Quality Dashboard Screenshot')
 
 ## Installation
 
@@ -16,9 +16,14 @@ The recommended aproach is to deploy the services as Docker container. A deploym
 
 Depending on your preferred deployment target, You will find examples of deployment files in the examples directory:
 
-- Docker: [examples/docker]
-- Docker Swarm [examples/docker-swarm]
-- Kubernetes: [examples/kubernetes]
+Docker Compose: [examples/qa-dash-example]
+
+## Docker Options
+
+Some aspects can be customized.
+
+- Data volume: the server image stores the data in the `/opt/data/`
+- The `BASEPATH`: the `ui` container assume that the service is deployed in the root folder but this can be customized with the `BASEPATH` variable. Example: [examples/qa-dash-example-basepath]
 
 ## User Interface
 
@@ -102,12 +107,12 @@ module.exports = {
   analyse: async reportFolder => {
     console.log(`Analysing ${reportFolder}`);
     return {
-      link: "report.html",
+      link: 'report.html',
       success: 0,
       warning: 0,
       error: 0,
       total: 0,
-      coverage: "0%"
+      coverage: '0%'
     };
   }
 };
