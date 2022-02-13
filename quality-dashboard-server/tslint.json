@@ -3,9 +3,9 @@
   "rules": {
     "arrow-parens": false,
     "trailing-comma": false,
-    "no-console": false,
+    "no-console": true,
     "max-line-length": [true, 120],
     "typedef": [true, "call-signature", "parameter", "member-variable-declaration"],
-    "quotemark": [true, "single"]
+    "quotemark": [true, "double"]
   }
 }

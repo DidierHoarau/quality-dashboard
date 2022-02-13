@@ -1,12 +1,12 @@
-import * as fse from 'fs-extra';
-import * as _ from 'lodash';
-import * as sha1 from 'sha1';
-import * as uuidv1 from 'uuid/v1';
-import { Config } from '../Config';
-import { JsonTools } from '../utils-std-ts/JsonTools';
-import { Logger } from '../utils-std-ts/logger';
+import * as fse from "fs-extra";
+import * as _ from "lodash";
+import * as sha1 from "sha1";
+import { v4 as uuidv4 } from "uuid";
+import { Config } from "../Config";
+import { JsonTools } from "../utils-std-ts/JsonTools";
+import { Logger } from "../utils-std-ts/logger";
 
-const logger = new Logger('UsersDB');
+const logger = new Logger("UsersDB");
 const DB_FILE_PATH = `${Config.DB_DIR}/users.json`;
 let usersDB;
 
@@ -47,9 +47,9 @@ export class UsersDB {
 
   public static async add(username: string, password: string): Promise<void> {
     const user = {
-      id: uuidv1(),
+      id: uuidv4(),
       password: sha1(password),
-      username
+      username,
     };
     usersDB.users.push(user);
     await fse.writeJSON(DB_FILE_PATH, usersDB, { spaces: 2 });
