@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from '@/components/HelloWorld.vue'
+import { RouterLink, RouterView } from "vue-router";
+import HelloWorld from "@/components/HelloWorld.vue";
+import UserService from "./services/UserService";
+import EventService from "./services/EventService";
+import Timeout from "./services/Timeout";
 </script>
 
 <template>
@@ -20,100 +23,130 @@ import HelloWorld from '@/components/HelloWorld.vue'
   <RouterView />
 </template>
 
+<script lang="ts">
+export default {
+  data() {
+    return {
+      count: 1,
+    };
+  },
+
+  // `mounted` is a lifecycle hook which we will explain later
+  mounted() {
+    // `this` refers to the component instance.
+    console.log(this.count); // => 1
+
+    // data can be mutated as well
+    this.count = 2;
+  },
+  methods: {
+    async checkAuthentication() {
+      await UserService.checkAuthentication().catch((err: Error) => {
+        EventService.$emit("alert-message", {
+          text: `ERR: Connection to server failed (${err.message})`,
+          type: "error",
+        });
+      });
+      await Timeout.wait(30000);
+      this.checkAuthentication();
+    },
+    async checkInitialization() {
+      UserService.checkInitialization().catch((err: Error) => {
+        EventService.$emit("alert-message", `ERR: Connection to server failed (${err.message})`);
+      });
+    },
+    async goto(path: string) {
+      this.$router.push(path);
+    },
+  },
+};
+</script>
+
 <style>
-@import '@/assets/base.css';
+@import "@/assets/base.css";
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-
-  font-weight: normal;
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #f0f0f0;
 }
 
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+h1 {
+  font-size: 180%;
+}
+h2 {
+  font-size: 160%;
+}
+h3 {
+  font-size: 140%;
+}
+h4 {
+  font-size: 120%;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+  display: grid;
+  grid-template-rows: 5em 1fr;
+  grid-template-columns: 1fr 1fr;
+  padding: 0;
+  margin: 0;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
+.app-title {
+  grid-row: 1;
+  grid-column: 1;
+  padding-left: 5vw;
+  background-color: #3949ab;
+  color: #eee;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
+.app-actions {
+  grid-row: 1;
+  grid-column: 2;
+  text-align: right;
+  padding-right: 5vw;
+  padding-top: 0.2em;
+  background-color: #3949ab;
+  color: #eee;
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
+.app-content {
+  grid-row: 2;
+  grid-column-start: 1;
+  grid-column-end: 2 span;
+  padding: 1em 5vw;
+}
+
+button {
+  background-color: #039be5; /* Green */
+  border: none;
+  color: white;
+  padding: 0.4em 0.8em;
   text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
+  text-decoration: none;
   display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+  font-size: 1em;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
 }
 
-nav a:first-of-type {
-  border: 0;
+input {
+  background-color: #fff; /* Green */
+  border: solid 1px #666;
+  padding: 0.4em 0.6em;
+  font-size: 1em;
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+.menu-icon {
+  margin-left: 0.6em;
+}
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
-
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.alert-message {
+  background-color: #fff59d;
+  padding: 2em;
 }
 </style>
