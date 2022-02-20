@@ -1,5 +1,5 @@
 let DATA_PATH_PREFIX = "/opt";
-if (process.env.ENV && process.env.ENV === "dev") {
+if (process.env.NODE_ENV && process.env.NODE_ENV === "dev") {
   DATA_PATH_PREFIX = ".data";
 }
 

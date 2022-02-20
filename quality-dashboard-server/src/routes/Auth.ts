@@ -1,7 +1,7 @@
-import * as jwt from 'jsonwebtoken';
-import * as uuidv1 from 'uuid/v1';
+import * as jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
 
-const AUTH_KEY = uuidv1();
+const AUTH_KEY = uuidv4();
 
 export class Auth {
   //
@@ -9,7 +9,7 @@ export class Auth {
     return jwt.sign(
       {
         exp: Math.floor(Date.now() / 1000) + 60 * 60,
-        user_id: user.id
+        user_id: user.id,
       },
       AUTH_KEY
     );
@@ -21,7 +21,7 @@ export class Auth {
       return { authenticated: true, info };
     } catch (err) {
       return {
-        authenticated: false
+        authenticated: false,
       };
     }
   }

@@ -1,16 +1,25 @@
 import axios from "axios";
-import { EventService } from "./EventService";
+import mitt from "mitt";
+import type EventAuthentication from "@types/EventAuthentication";
+import { appConfigStore } from "@/stores/appConfig";
+import { userAuthenticationStore } from "@/stores/userAuthentication";
+
+const emitter = mitt<EventAuthentication>();
 
 export default class UserService {
   //
   public static logout(): void {
     localStorage.removeItem("auth_token");
-    EventService.$emit("user-authenticated", false);
+    const userAuthentication = userAuthenticationStore();
+    userAuthentication.$patch({
+      isAuthenticated: false,
+      authToken: "",
+    });
   }
 
   public static async login(username: string, password: string): Promise<void> {
     const response = await axios.post(
-      `${process.env.VUE_APP_BASEPATH}api/users/login`,
+      `${import.meta.env.VITE_APP_BASEPATH}/users/login/`,
       {
         password,
         username,
@@ -18,12 +27,14 @@ export default class UserService {
       { headers: UserService.getAuthHeader() }
     );
     localStorage.setItem("auth_token", response.data.token);
-    EventService.$emit("user-authenticated", true);
+    const userAuthentication = userAuthenticationStore();
+    userAuthentication.isAuthenticated = true;
+    userAuthentication.authToken = response.data.token;
   }
 
   public static async addUser(username: string, password: string): Promise<void> {
     await axios.post(
-      `${process.env.VUE_APP_BASEPATH}api/users`,
+      `${import.meta.env.VITE_APP_BASEPATH}api/users`,
       {
         password,
         username,
@@ -36,7 +47,7 @@ export default class UserService {
     const token = localStorage.getItem("auth_token") as string;
     const tokenData = JSON.parse(atob(token.split(".")[1]));
     await axios.put(
-      `${process.env.VUE_APP_BASEPATH}api/users/${tokenData.user_id}/password`,
+      `${import.meta.env.VITE_APP_BASEPATH}api/users/${tokenData.user_id}/password`,
       {
         password,
       },
@@ -48,18 +59,26 @@ export default class UserService {
     if (localStorage.getItem("auth_token")) {
       const token = localStorage.getItem("auth_token") as string;
       const tokenData = JSON.parse(atob(token.split(".")[1]));
+      const userAuthentication = userAuthenticationStore();
       if (new Date() < new Date(tokenData.exp * 1000)) {
-        EventService.$emit("user-authenticated", true);
+        userAuthentication.$patch({
+          isAuthenticated: true,
+          authToken: token,
+        });
       } else {
         localStorage.removeItem("auth_token");
-        EventService.$emit("user-authenticated", false);
+        userAuthentication.$patch({
+          isAuthenticated: false,
+          authToken: "",
+        });
       }
     }
   }
 
   public static async checkInitialization(): Promise<void> {
-    const response = await axios.get(`${process.env.VUE_APP_BASEPATH}api/users/status`);
-    EventService.$emit("user-initialized", response.data.initialized);
+    const response = await axios.get(`${import.meta.env.VITE_APP_BASEPATH}/users/status/`);
+    const appConfig = appConfigStore();
+    appConfig.isAuthInitialized = response.data.initialized;
   }
 
   public static getAuthHeader(): any {

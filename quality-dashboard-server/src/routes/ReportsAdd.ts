@@ -6,22 +6,10 @@ import { ReportsDB } from "../db/ReportsDB";
 import { Logger } from "../utils-std-ts/logger";
 import { FastifyInstance, FastifyRequest, RequestGenericInterface } from "fastify";
 
-const logger = new Logger("ReportsRoute");
+const logger = new Logger(path.basename(__filename));
 
 async function routes(fastify: FastifyInstance, options) {
   //
-  fastify.get(`${Config.API_BASE_PATH}/reports`, async (req, res) => {
-    return res.status(200).send(await ReportsDB.list());
-  });
-
-  fastify.delete(`${Config.API_BASE_PATH}/`, async (req, res) => {
-    if (process.env.NODE_ENV !== "dev") {
-      return res.status(404).send({ error: "ERR: Reset forbidden for non dev environment" });
-    }
-    ReportsDB.reset();
-    return res.status(202).send({});
-  });
-
   interface AddReportRequest extends RequestGenericInterface {
     Params: {
       groupName: string;
@@ -35,7 +23,7 @@ async function routes(fastify: FastifyInstance, options) {
     };
   }
   fastify.post<AddReportRequest>(
-    `${Config.API_BASE_PATH}/:groupName/:projectName/:projectVersion/:reportName/:processorType`,
+    `${Config.API_BASE_PATH}/reports/:groupName/:projectName/:projectVersion/:reportName/:processorType/`,
     async (req, res) => {
       const reportFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${req.params.projectVersion}/${req.params.reportName}`;
       if (fse.existsSync(reportFolder)) {
@@ -92,25 +80,6 @@ async function routes(fastify: FastifyInstance, options) {
       return res.status(201).send({});
     }
   );
-
-  interface DeleteRequest extends RequestGenericInterface {
-    Params: {
-      groupName: string;
-      projectName: string;
-      projectVersion: string;
-    };
-  }
-  fastify.delete<DeleteRequest>(`${Config.API_BASE_PATH}/:groupName/:projectName/:projectVersion`, async (req, res) => {
-    const versionFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${req.params.projectVersion}`;
-    // if (!req.user.authenticated) {
-    //   return res.status(403).send({ error: "ERR: authentication error" });
-    // }
-    if (fse.existsSync(versionFolder)) {
-      await fse.remove(versionFolder);
-    }
-    ReportsDB.deleteVersion(req.params.groupName, req.params.projectName, req.params.projectVersion);
-    return res.status(202).send({});
-  });
 }
 
 module.exports = routes;

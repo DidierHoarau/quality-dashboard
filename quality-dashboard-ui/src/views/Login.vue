@@ -1,6 +1,7 @@
 <template>
   <div>
     <div v-if="isAuthenticated">
+      <h2>Logged In</h2>
       <button v-on:click="logout()">Logout</button>
       <br />
       <br />
@@ -11,6 +12,18 @@
           <input type="password" v-model="account.password" />
         </div>
         <button v-on:click="changePassword()">Save</button>
+        <br />
+        <br />
+        <h2>Settting</h2>
+        <div class="form-label">Make Dashboard Public</div>
+        <div class="form-field">
+          <input type="password" v-model="config.isDashboardPublic" />
+        </div>
+        <div class="form-label">Upload Token</div>
+        <div class="form-field">
+          <input type="password" v-model="config.uploadToken" />
+        </div>
+        <button v-on:click="saveSettings()">Save</button>
       </div>
     </div>
     <div v-else>
@@ -33,110 +46,99 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import axios from "axios";
-import { EventService } from "../services/EventService";
-import UserService from "../services/UserService";
+import UserService from "@/services/UserService";
+import mitt from "mitt";
+import type EventAlert from "@types/EventAlert";
+import { appConfigStore } from "@/stores/appConfig";
+import { userAuthenticationStore } from "@/stores/userAuthentication";
 
-@Component({
-  components: {}
-})
-export default class Login extends Vue {
-  //
-  private isAuthenticated = false;
+const emitter = mitt<EventAlert>();
 
-  private isInitialized = true;
+export default {
+  data() {
+    return {
+      isAuthenticated: false,
+      isInitialized: true,
+      account: { password: "", username: "" },
+      config: { isDashboardPublic: "", uploadToken: "" },
+    };
+  },
 
-  private account = { password: "", username: "" };
-
-  private created(): void {
-    EventService.$on("user-authenticated", (isAuthenticated: boolean) => {
-      this.isAuthenticated = isAuthenticated;
+  mounted() {
+    const appConfig = appConfigStore();
+    appConfig.$subscribe((mutation, state) => {
+      this.isInitialized = state.isAuthInitialized;
     });
-    EventService.$on("user-initialized", (isInitialized: boolean) => {
-      if (!isInitialized) {
-        this.isInitialized = false;
+    const userAuthentication = userAuthenticationStore();
+    userAuthentication.$subscribe((mutation, state) => {
+      this.isAuthenticated = state.isAuthenticated;
+    });
+  },
+  methods: {
+    async login() {
+      if (!this.account.username || !this.account.password) {
+        emitter.emit("alertMessage", {
+          text: "Username/Password missing",
+          type: "error",
+        });
       } else {
-        this.isInitialized = true;
+        try {
+          await UserService.login(this.account.username, this.account.password);
+          this.account.username = "";
+          this.account.password = "";
+        } catch (err) {
+          emitter.emit("alertMessage", {
+            text: "Login Failed",
+            type: "error",
+          });
+        }
       }
-    });
+    },
 
-    this.checkInitialization();
-    this.checkAuthentication();
-  }
-
-  private async login() {
-    if (!this.account.username || !this.account.password) {
-      EventService.$emit("alert-message", "Username/Password missing");
-    } else {
-      try {
-        await UserService.login(this.account.username, this.account.password);
+    async createAdmin() {
+      if (!this.account.username || !this.account.password) {
+        EventService.$emit("alert-message", "Username/Password missing");
+      } else {
+        await UserService.addUser(this.account.username, this.account.password).catch((err: Error) => {
+          EventService.$emit("alert-message", `ERR: Can not created account (${err.message})`);
+        });
         this.account.username = "";
         this.account.password = "";
-      } catch (err) {
-        EventService.$emit("alert-message", "Login failed");
+        await UserService.checkInitialization();
       }
-    }
-  }
+    },
 
-  private async createAdmin() {
-    if (!this.account.username || !this.account.password) {
-      EventService.$emit("alert-message", "Username/Password missing");
-    } else {
-      await UserService.addUser(
-        this.account.username,
-        this.account.password
-      ).catch((err: Error) => {
-        EventService.$emit(
-          "alert-message",
-          `ERR: Can not created account (${err.message})`
-        );
+    async changePassword() {
+      if (!this.account.password) {
+        EventService.$emit("alert-message", "Password missing");
+      } else {
+        await UserService.updatePassword(this.account.password).catch((err: Error) => {
+          EventService.$emit("alert-message", `ERR: Can not update account (${err.message})`);
+        });
+        this.account.username = "";
+        this.account.password = "";
+      }
+    },
+
+    async logout() {
+      await UserService.logout();
+    },
+
+    async checkAuthentication(): Promise<void> {
+      await UserService.checkAuthentication().catch((err: Error) => {
+        EventService.$emit("alert-message", {
+          text: `ERR: Connection to server failed (${err.message})`,
+          type: "error",
+        });
       });
-      this.account.username = "";
-      this.account.password = "";
-      await UserService.checkInitialization();
-    }
-  }
+    },
 
-  private async changePassword() {
-    if (!this.account.password) {
-      EventService.$emit("alert-message", "Password missing");
-    } else {
-      await UserService.updatePassword(this.account.password).catch(
-        (err: Error) => {
-          EventService.$emit(
-            "alert-message",
-            `ERR: Can not update account (${err.message})`
-          );
-        }
-      );
-      this.account.username = "";
-      this.account.password = "";
-    }
-  }
-
-  private async logout() {
-    await UserService.logout();
-  }
-
-  private async checkAuthentication(): Promise<void> {
-    await UserService.checkAuthentication().catch((err: Error) => {
-      EventService.$emit("alert-message", {
-        text: `ERR: Connection to server failed (${err.message})`,
-        type: "error"
+    async checkInitialization() {
+      UserService.checkInitialization().catch((err: Error) => {
+        EventService.$emit("alert-message", `ERR: Connection to server failed (${err.message})`);
       });
-    });
-  }
-
-  private async checkInitialization() {
-    UserService.checkInitialization().catch((err: Error) => {
-      EventService.$emit(
-        "alert-message",
-        `ERR: Connection to server failed (${err.message})`
-      );
-    });
-  }
-}
+    },
+  },
+};
 </script>
-<style lang="scss">
-</style>
+<style lang="scss"></style>

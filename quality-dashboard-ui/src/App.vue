@@ -1,48 +1,56 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "@/components/HelloWorld.vue";
 import UserService from "./services/UserService";
-import EventService from "./services/EventService";
-import Timeout from "./services/Timeout";
+import { Timeout } from "@/services/Timeout";
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+  <div class="app">
+    <div class="app-title">
+      <h1 v-on:click="goto('/')">QualityDashboard</h1>
     </div>
-  </header>
-
-  <RouterView />
+    <div class="app-actions">
+      <h2>
+        <font-awesome-icon class="menu-icon" icon="tachometer-alt" v-on:click="goto('/')" />
+        <font-awesome-icon class="menu-icon" icon="user" v-on:click="goto('/login')" />
+      </h2>
+    </div>
+    <div class="app-content">
+      <RouterView />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
+import mitt from "mitt";
+import type EventAlert from "@types/EventAlert";
+import { appConfigStore } from "@/stores/appConfig";
+
+const emitter = mitt<EventAlert>();
+
 export default {
   data() {
     return {
       count: 1,
+      isAuthInitialized: false,
+      isInitialized: true,
     };
   },
 
-  // `mounted` is a lifecycle hook which we will explain later
   mounted() {
-    // `this` refers to the component instance.
-    console.log(this.count); // => 1
-
-    // data can be mutated as well
-    this.count = 2;
+    const appConfig = appConfigStore();
+    appConfig.$subscribe((mutation, state) => {
+      if (!state.isAuthInitialized) {
+        this.goto("/login");
+      }
+    });
+    this.checkInitialization();
+    this.checkAuthentication();
   },
   methods: {
     async checkAuthentication() {
       await UserService.checkAuthentication().catch((err: Error) => {
-        EventService.$emit("alert-message", {
+        emitter.emit("alertMessage", {
           text: `ERR: Connection to server failed (${err.message})`,
           type: "error",
         });
@@ -51,8 +59,8 @@ export default {
       this.checkAuthentication();
     },
     async checkInitialization() {
-      UserService.checkInitialization().catch((err: Error) => {
-        EventService.$emit("alert-message", `ERR: Connection to server failed (${err.message})`);
+      await UserService.checkInitialization().catch((err: Error) => {
+        emitter.emit("alert-message", `ERR: Connection to server failed (${err.message})`);
       });
     },
     async goto(path: string) {

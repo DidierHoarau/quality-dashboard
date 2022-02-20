@@ -16,7 +16,6 @@
   </div>
 </template>
 
-
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import axios from "axios";
@@ -26,7 +25,7 @@ import { Timeout } from "./services/Timeout";
 import UserService from "./services/UserService";
 
 @Component({
-  components: { AlertMessages }
+  components: { AlertMessages },
 })
 export default class Reports extends Vue {
   //
@@ -52,7 +51,7 @@ export default class Reports extends Vue {
     await UserService.checkAuthentication().catch((err: Error) => {
       EventService.$emit("alert-message", {
         text: `ERR: Connection to server failed (${err.message})`,
-        type: "error"
+        type: "error",
       });
     });
     await Timeout.wait(30000);
@@ -61,10 +60,7 @@ export default class Reports extends Vue {
 
   private async checkInitialization() {
     UserService.checkInitialization().catch((err: Error) => {
-      EventService.$emit(
-        "alert-message",
-        `ERR: Connection to server failed (${err.message})`
-      );
+      EventService.$emit("alert-message", `ERR: Connection to server failed (${err.message})`);
     });
   }
 

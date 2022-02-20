@@ -7,10 +7,11 @@
     "lint": "tslint --project tsconfig.json ./src/**/*.ts",
     "test": "jest --coverage",
     "test:dev": "jest --watch --coverage",
-    "dev": "nodemon -w src -e ts --exec 'ENV=dev ts-node -P tsconfig.json ./src/app.ts'"
+    "dev": "NODE_ENV=dev nodemon -w src -e ts --exec 'ts-node -P tsconfig.json ./src/app.ts'"
   },
   "dependencies": {
     "fastify": "^3.27.1",
+    "fastify-cors": "^6.0.2",
     "fs-extra": "^10.0.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
