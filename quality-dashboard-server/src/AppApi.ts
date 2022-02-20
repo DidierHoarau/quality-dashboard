@@ -29,6 +29,8 @@ export class AppApi {
     fastify.register(require("./routes/UsersList"));
     fastify.register(require("./routes/UsersLogin"));
     fastify.register(require("./routes/UsersStatus"));
+    fastify.register(require("./routes/SettingsGet"));
+    fastify.register(require("./routes/SettingsUpdate"));
     if (process.env.NODE_ENV === "dev") {
       fastify.register(require("./routes/UsersReset"));
       fastify.register(require("./routes/ReportsReset"));

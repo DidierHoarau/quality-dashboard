@@ -25,4 +25,21 @@ export class Auth {
       };
     }
   }
+
+  public static async checkAuthHeader(headers: any): Promise<AuthInto> {
+    try {
+      if (!headers.authorization) throw new Error("Unauthenticated");
+      const info = jwt.verify(headers.authorization.replace("Bearer ", ""), AUTH_KEY);
+      return { authenticated: true, info };
+    } catch (err) {
+      return {
+        authenticated: false,
+      };
+    }
+  }
 }
+
+export type AuthInto = {
+  authenticated: boolean;
+  info?: any;
+};

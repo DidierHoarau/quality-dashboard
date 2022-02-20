@@ -31,8 +31,9 @@ export class SettingsDB {
   public static get(): Promise<any> {
     return JsonTools.clone(settingsDB);
   }
-  public static async setDashboardPublic(isPublic: boolean): Promise<void> {
-    settingsDB.isDasboardPublic = isPublic;
+  public static async update(settings: any): Promise<void> {
+    settingsDB.isDasboardPublic = settings.isDasboardPublic;
+    settingsDB.uploadToken = settings.uploadToken;
     await fse.writeJSON(DB_FILE_PATH, settingsDB, { spaces: 2 });
   }
 
