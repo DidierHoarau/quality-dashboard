@@ -14,7 +14,8 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",
     "axios": "^0.26.0",
-    "jest": "^27.5.1"
+    "jest": "^27.5.1",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0"

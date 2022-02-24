@@ -9,6 +9,7 @@ const logger = new Logger(path.basename(__filename));
 async function routes(fastify: FastifyInstance, options) {
   //
   fastify.get(`${Config.API_BASE_PATH}/reports/`, async (req, res) => {
+    logger.debug(`[${req.method}] ${req.url}`);
     return res.status(200).send(await ReportsDB.list());
   });
 }

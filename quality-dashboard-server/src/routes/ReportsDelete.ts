@@ -1,6 +1,5 @@
 import * as fse from "fs-extra";
 import * as path from "path";
-import * as targz from "targz";
 import { Config } from "../Config";
 import { ReportsDB } from "../db/ReportsDB";
 import { Logger } from "../utils-std-ts/logger";
@@ -21,6 +20,7 @@ async function routes(fastify: FastifyInstance, options) {
   fastify.delete<DeleteRequest>(
     `${Config.API_BASE_PATH}/reports/:groupName/:projectName/:projectVersion/`,
     async (req, res) => {
+      logger.info(`[${req.method}] ${req.url}`);
       const versionFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${req.params.projectVersion}`;
       // if (!req.user.authenticated) {
       //   return res.status(403).send({ error: "ERR: authentication error" });

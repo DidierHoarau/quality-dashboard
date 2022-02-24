@@ -8,6 +8,7 @@ const logger = new Logger("UsersRoute");
 async function routes(fastify: FastifyInstance, options) {
   //
   fastify.get(`${Config.API_BASE_PATH}/users/`, async (req, res) => {
+    logger.debug(`[${req.method}] ${req.url}`);
     const userList = await UsersDB.list();
     const response = { users: [] };
     for (const user of userList.users) {

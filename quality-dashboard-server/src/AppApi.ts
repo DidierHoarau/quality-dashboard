@@ -18,9 +18,12 @@ export class AppApi {
   public static start(): void {
     const fastify = Fastify({
       logger: false,
+      ignoreTrailingSlash: true,
     });
 
     fastify.register(require("fastify-cors"), {});
+    fastify.register(require("fastify-multipart"));
+
     fastify.register(require("./routes/ReportsAdd"));
     fastify.register(require("./routes/ReportsDelete"));
     fastify.register(require("./routes/ReportsList"));

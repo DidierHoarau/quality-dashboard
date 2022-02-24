@@ -10,6 +10,7 @@ const logger = new Logger(path.basename(__filename));
 async function routes(fastify: FastifyInstance, options) {
   //
   fastify.get(`${Config.API_BASE_PATH}/settings/`, async (req, res) => {
+    logger.debug(`[${req.method}] ${req.url}`);
     const auth = await Auth.checkAuthHeader(req.headers);
     if (!auth.authenticated) {
       return res.status(403).send({});

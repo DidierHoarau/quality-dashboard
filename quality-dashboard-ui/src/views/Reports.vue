@@ -64,6 +64,7 @@
 <script lang="ts">
 import UserService from "../services/UserService";
 import ReportService from "../services/ReportService";
+import { reportsStore } from "@/stores/reports";
 import mitt from "mitt";
 
 // const emitter = mitt<EventAuthentication>();
@@ -76,12 +77,11 @@ export default {
     };
   },
   mounted() {
-    // EventService.$on("user-authenticated", (isAuthenticated: boolean) => {
-    //   this.isAuthenticated = isAuthenticated;
-    // });
-    // EventService.$on("report-groups-data", (groupData: any) => {
-    //   this.groups = groupData.data.groups;
-    // });
+    const reports = reportsStore();
+    reports.$subscribe((mutation, state) => {
+      this.groups = state.groups;
+    });
+
     this.checkAuthentication();
     this.getGroups();
   },
