@@ -16,19 +16,19 @@ import { Timeout } from "@/services/Timeout";
       </h2>
     </div>
     <div class="app-content">
+      <AlertMessages />
       <RouterView />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import mitt from "mitt";
-import type EventAlert from "@types/EventAlert";
 import { appConfigStore } from "@/stores/appConfig";
-
-const emitter = mitt<EventAlert>();
+import AlertMessages from "@/components/AlertMessages.vue";
+import AlertService from "@/services/AlertService";
 
 export default {
+  components: { AlertMessages },
   data() {
     return {
       count: 1,
@@ -44,24 +44,19 @@ export default {
         this.goto("/settings");
       }
     });
-    this.checkInitialization();
+    UserService.refreshInitializationStatus();
     this.checkAuthentication();
   },
   methods: {
     async checkAuthentication() {
       await UserService.checkAuthentication().catch((err: Error) => {
-        emitter.emit("alertMessage", {
+        AlertService.send({
           text: `ERR: Connection to server failed (${err.message})`,
           type: "error",
         });
       });
       await Timeout.wait(30000);
       this.checkAuthentication();
-    },
-    async checkInitialization() {
-      await UserService.checkInitialization().catch((err: Error) => {
-        emitter.emit("alert-message", `ERR: Connection to server failed (${err.message})`);
-      });
     },
     async goto(path: string) {
       this.$router.push(path);

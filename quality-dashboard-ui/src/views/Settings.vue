@@ -51,12 +51,9 @@
 <script lang="ts">
 import UserService from "@/services/UserService";
 import AppConfigService from "@/services/AppConfigService";
-import mitt from "mitt";
-import type EventAlert from "@types/EventAlert";
 import { appConfigStore } from "@/stores/appConfig";
 import { userAuthenticationStore } from "@/stores/userAuthentication";
-
-const emitter = mitt<EventAlert>();
+import AlertService from "@/services/AlertService";
 
 export default {
   data() {
@@ -72,63 +69,50 @@ export default {
   mounted() {
     const appConfig = appConfigStore();
     appConfig.$subscribe((mutation, state) => {
-      console.log(state);
+      console.log();
       this.config.isDashboardPublic = state.isDashboardPublic;
       this.config.uploadToken = state.uploadToken;
+      console.log(this.config);
     });
     this.config.isDashboardPublic = appConfig.isDashboardPublic;
     this.config.uploadToken = appConfig.uploadToken;
-    AppConfigService.get().catch((err: Error) => {
-      // EventService.$emit("alert-message", `ERR: Can not get application config (${err.message})`);
-    });
 
     const userAuthentication = userAuthenticationStore();
     userAuthentication.$subscribe((mutation, state) => {
       this.isAuthenticated = state.isAuthenticated;
     });
     this.isAuthenticated = userAuthentication.isAuthenticated;
+
+    AppConfigService.refresh();
+    UserService.refreshInitializationStatus();
   },
   methods: {
     async login() {
       if (!this.account.username || !this.account.password) {
-        emitter.emit("alertMessage", {
-          text: "Username/Password missing",
-          type: "error",
-        });
+        AlertService.send({ text: `Username/Password missing`, type: "error" });
       } else {
-        try {
-          await UserService.login(this.account.username, this.account.password);
-          this.account.username = "";
-          this.account.password = "";
-        } catch (err) {
-          emitter.emit("alertMessage", {
-            text: "Login Failed",
-            type: "error",
-          });
-        }
+        await UserService.login(this.account.username, this.account.password);
+        this.account.username = "";
+        this.account.password = "";
       }
     },
 
     async createAdmin() {
       if (!this.account.username || !this.account.password) {
-        EventService.$emit("alert-message", "Username/Password missing");
+        AlertService.send({ text: `Username/Password missing`, type: "error" });
       } else {
-        await UserService.addUser(this.account.username, this.account.password).catch((err: Error) => {
-          EventService.$emit("alert-message", `ERR: Can not created account (${err.message})`);
-        });
+        await UserService.addUser(this.account.username, this.account.password);
         this.account.username = "";
         this.account.password = "";
-        await UserService.checkInitialization();
+        UserService.refreshInitializationStatus();
       }
     },
 
     async changePassword() {
       if (!this.account.password) {
-        EventService.$emit("alert-message", "Password missing");
+        AlertService.send({ text: `Password Missing`, type: "error" });
       } else {
-        await UserService.updatePassword(this.account.password).catch((err: Error) => {
-          EventService.$emit("alert-message", `ERR: Can not update account (${err.message})`);
-        });
+        await UserService.updatePassword(this.account.password);
         this.account.username = "";
         this.account.password = "";
       }
@@ -138,27 +122,10 @@ export default {
       await UserService.logout();
     },
 
-    async checkAuthentication(): Promise<void> {
-      await UserService.checkAuthentication().catch((err: Error) => {
-        EventService.$emit("alert-message", {
-          text: `ERR: Connection to server failed (${err.message})`,
-          type: "error",
-        });
-      });
-    },
-
-    async checkInitialization() {
-      UserService.checkInitialization().catch((err: Error) => {
-        EventService.$emit("alert-message", `ERR: Connection to server failed (${err.message})`);
-      });
-    },
-
     async saveSettings() {
       AppConfigService.update({
         isDashboardPublic: this.config.isDashboardPublic,
         uploadToken: this.config.uploadToken,
-      }).catch((err: Error) => {
-        // EventService.$emit("alert-message", `ERR: Can not get application config (${err.message})`);
       });
     },
   },

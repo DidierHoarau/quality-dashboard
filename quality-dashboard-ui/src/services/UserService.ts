@@ -1,10 +1,7 @@
 import axios from "axios";
-import mitt from "mitt";
-import type EventAuthentication from "@types/EventAuthentication";
 import { appConfigStore } from "@/stores/appConfig";
 import { userAuthenticationStore } from "@/stores/userAuthentication";
-
-const emitter = mitt<EventAuthentication>();
+import AlertService from "./AlertService";
 
 export default class UserService {
   //
@@ -18,41 +15,61 @@ export default class UserService {
   }
 
   public static async login(username: string, password: string): Promise<void> {
-    const response = await axios.post(
-      `${import.meta.env.VITE_APP_BASEPATH}/users/login/`,
-      {
-        password,
-        username,
-      },
-      { headers: UserService.getAuthHeader() }
-    );
-    localStorage.setItem("auth_token", response.data.token);
-    const userAuthentication = userAuthenticationStore();
-    userAuthentication.isAuthenticated = true;
-    userAuthentication.authToken = response.data.token;
+    axios
+      .post(
+        `${import.meta.env.VITE_APP_BASEPATH}/users/login/`,
+        {
+          password,
+          username,
+        },
+        { headers: UserService.getAuthHeader() }
+      )
+      .then((response) => {
+        localStorage.setItem("auth_token", response.data.token);
+        const userAuthentication = userAuthenticationStore();
+        userAuthentication.isAuthenticated = true;
+        userAuthentication.authToken = response.data.token;
+      })
+      .catch((err) => {
+        AlertService.send({ text: `ERR: Authentication failed: ${err.message}`, type: "error" });
+      });
   }
 
   public static async addUser(username: string, password: string): Promise<void> {
-    await axios.post(
-      `${import.meta.env.VITE_APP_BASEPATH}/users`,
-      {
-        password,
-        username,
-      },
-      { headers: UserService.getAuthHeader() }
-    );
+    await axios
+      .post(
+        `${import.meta.env.VITE_APP_BASEPATH}/users`,
+        {
+          password,
+          username,
+        },
+        { headers: UserService.getAuthHeader() }
+      )
+      .then((response) => {
+        AlertService.send({ text: `User Created`, type: "info" });
+      })
+      .catch((err) => {
+        AlertService.send({ text: `ERR: Error adding user: ${err.message}`, type: "error" });
+      });
   }
 
   public static async updatePassword(password: string): Promise<void> {
     const token = localStorage.getItem("auth_token") as string;
     const tokenData = JSON.parse(atob(token.split(".")[1]));
-    await axios.put(
-      `${import.meta.env.VITE_APP_BASEPATH}api/users/${tokenData.user_id}/password`,
-      {
-        password,
-      },
-      { headers: UserService.getAuthHeader() }
-    );
+    axios
+      .put(
+        `${import.meta.env.VITE_APP_BASEPATH}/users/${tokenData.user_id}/password`,
+        {
+          password,
+        },
+        { headers: UserService.getAuthHeader() }
+      )
+      .then((response) => {
+        AlertService.send({ text: `Password Changed`, type: "info" });
+      })
+      .catch((err) => {
+        AlertService.send({ text: `ERR: Error changing paasword: ${err.message}`, type: "error" });
+      });
   }
 
   public static async checkAuthentication(): Promise<void> {
@@ -75,10 +92,16 @@ export default class UserService {
     }
   }
 
-  public static async checkInitialization(): Promise<void> {
-    const response = await axios.get(`${import.meta.env.VITE_APP_BASEPATH}/users/status/`);
-    const appConfig = appConfigStore();
-    appConfig.isAuthInitialized = response.data.initialized;
+  public static async refreshInitializationStatus(): Promise<void> {
+    await axios
+      .get(`${import.meta.env.VITE_APP_BASEPATH}/users/status/`)
+      .then((response) => {
+        const appConfig = appConfigStore();
+        appConfig.isAuthInitialized = response.data.initialized;
+      })
+      .catch((err) => {
+        AlertService.send({ text: `ERR: Error checking status: ${err.message}`, type: "error" });
+      });
   }
 
   public static getAuthHeader(): any {

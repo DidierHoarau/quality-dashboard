@@ -1,12 +1,13 @@
 import axios from "axios";
 import UserService from "./UserService";
+import AlertService from "./AlertService";
 import { reportsStore } from "@/stores/reports";
 
 const CACHEID_REPORT_GROUPS = "CACHE_REPORT_GROUPS";
 
 export default class ReportService {
   //
-  public static async requestGroupsUpdate(): Promise<any> {
+  public static async refresh(): Promise<any> {
     const groupsCached = localStorage.getItem(CACHEID_REPORT_GROUPS);
     const reports = reportsStore();
     if (groupsCached) {
@@ -24,14 +25,18 @@ export default class ReportService {
       reports.$patch({
         groups: newGroupsCached.data.groups,
       });
-    } catch (err) {
-      // EventService.$emit("alert-message", `ERR: Error getting reports: ${err.message}`);
+    } catch (err: any) {
+      AlertService.send({ text: `ERR: Error getting reports: ${err.message}`, type: "error" });
     }
   }
 
   public static async deleteVersion(group: string, project: string, version: string): Promise<void> {
-    await axios.delete(`${import.meta.env.VITE_APP_BASEPATH}/reports/${group}/${project}/${version}/`, {
-      headers: UserService.getAuthHeader(),
-    });
+    axios
+      .delete(`${import.meta.env.VITE_APP_BASEPATH}/reports/${group}/${project}/${version}/`, {
+        headers: UserService.getAuthHeader(),
+      })
+      .catch((err) => {
+        AlertService.send({ text: `ERR: Error getting reports: ${err.message}`, type: "error" });
+      });
   }
 }

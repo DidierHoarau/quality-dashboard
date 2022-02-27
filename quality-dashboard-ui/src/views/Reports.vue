@@ -1,7 +1,7 @@
 <template>
   <div class="report-list">
     <h2>Reports</h2>
-    <font-awesome-icon class="action-icon" icon="sync" v-on:click="getGroups()" />
+    <font-awesome-icon class="action-icon" icon="sync" v-on:click="refreshReports()" />
     <div class="report-group" v-for="group in groups" :key="group.name">
       <h3>{{ group.name }}</h3>
       <div class="report-project" v-for="project in group.projects" :key="project.name">
@@ -66,9 +66,7 @@
 import UserService from "../services/UserService";
 import ReportService from "../services/ReportService";
 import { reportsStore } from "@/stores/reports";
-import mitt from "mitt";
-
-// const emitter = mitt<EventAuthentication>();
+import AlertService from "@/services/AlertService";
 
 export default {
   data() {
@@ -84,27 +82,27 @@ export default {
     });
 
     this.checkAuthentication();
-    this.getGroups();
+    this.refreshReports();
   },
   methods: {
-    async getGroups() {
-      await ReportService.requestGroupsUpdate();
+    async refreshReports() {
+      await ReportService.refresh();
     },
 
     async deleteVersion(group: string, project: string, version: string) {
       if (confirm(`Delete version ${version}?`)) {
         try {
           await ReportService.deleteVersion(group, project, version);
-          this.getGroups();
+          this.refreshReports();
         } catch (err) {
-          // EventService.$emit("alert-message", `ERR: Error deleting version (${err.message})`);
+          AlertService.send({ text: `ERR: Error deleting version (${err.message})`, type: "error" });
         }
       }
     },
 
     async checkAuthentication(): Promise<void> {
       await UserService.checkAuthentication().catch((err: Error) => {
-        // EventService.$emit("alert-message", `ERR: Connection to server failed (${err.message})`);
+        AlertService.send({ text: `ERR: Connection to server failed (${err.message})`, type: "error" });
       });
     },
 

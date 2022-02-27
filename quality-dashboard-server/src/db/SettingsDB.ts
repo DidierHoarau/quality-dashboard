@@ -1,8 +1,6 @@
 import * as fse from "fs-extra";
 import * as _ from "lodash";
 import * as path from "path";
-import * as sha1 from "sha1";
-import { v4 as uuidv4 } from "uuid";
 import { Config } from "../Config";
 import { JsonTools } from "../utils-std-ts/JsonTools";
 import { Logger } from "../utils-std-ts/logger";

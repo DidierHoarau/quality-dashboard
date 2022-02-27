@@ -11,7 +11,7 @@ async function routes(fastify: FastifyInstance, options) {
   //
   interface UpdateSettingsRequest extends RequestGenericInterface {
     Body: {
-      isDasboardPublic: boolean;
+      isDashboardPublic: boolean;
       uploadToken: string;
     };
   }
@@ -21,7 +21,7 @@ async function routes(fastify: FastifyInstance, options) {
     if (!auth.authenticated) {
       return res.status(403).send({});
     }
-    await SettingsDB.update({ isDasboardPublic: req.body.isDasboardPublic, uploadToken: req.body.uploadToken });
+    await SettingsDB.update({ isDashboardPublic: req.body.isDashboardPublic, uploadToken: req.body.uploadToken });
     return res.status(202).send({});
   });
 }

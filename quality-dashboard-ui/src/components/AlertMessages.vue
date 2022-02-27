@@ -7,6 +7,8 @@
 </template>
 
 <script lang="ts">
+import AlertService from "@/services/AlertService";
+
 export default {
   data() {
     return {
@@ -16,9 +18,10 @@ export default {
 
   // `mounted` is a lifecycle hook which we will explain later
   mounted() {
-    EventService.$on("alert-message", (message: string) => {
+    AlertService.onEvent((event) => {
       this.messages.push({
-        text: message,
+        text: event.text,
+        type: event.type,
         date: new Date(),
       });
       setTimeout(() => {
@@ -28,7 +31,7 @@ export default {
   },
 };
 </script>
-<style lang="scss">
+<style>
 .message {
   padding: 1rem;
   margin: 1rem;

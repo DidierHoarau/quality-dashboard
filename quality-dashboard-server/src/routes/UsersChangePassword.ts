@@ -23,9 +23,10 @@ async function routes(fastify: FastifyInstance, options) {
     if (!req.body.password) {
       return res.status(400).send({ error: 'ERR: "password" missing' });
     }
-    // if (!req.user.authenticated || req.user.info.user_id !== req.params.id) {
-    //   return res.status(403).send({ error: "ERR: authentication error" });
-    // }
+    const auth = await Auth.checkAuthHeader(req.headers);
+    if (!auth.authenticated || req.params.id !== auth.info.user_id) {
+      return res.status(403).send({});
+    }
     await UsersDB.updatePassword(req.params.id, req.body.password);
     return res.status(201).send({});
   });
