@@ -34,7 +34,7 @@ export default class UserService {
 
   public static async addUser(username: string, password: string): Promise<void> {
     await axios.post(
-      `${import.meta.env.VITE_APP_BASEPATH}api/users`,
+      `${import.meta.env.VITE_APP_BASEPATH}/users`,
       {
         password,
         username,

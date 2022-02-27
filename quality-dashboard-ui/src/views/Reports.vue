@@ -21,6 +21,7 @@
               <div class="report-title">
                 <a
                   v-if="report.result.link"
+                  target="_blank"
                   :href="getReportUrl(group.name, project.name, version.name, report.name, report.result.link)"
                   >{{ report.name }}</a
                 >
@@ -127,7 +128,8 @@ export default {
         return reportLink;
       } else {
         return (
-          "./api/reports_data/" +
+          import.meta.env.VITE_APP_BASEPATH +
+          "/reports_data/" +
           groupName +
           "/" +
           projectName +

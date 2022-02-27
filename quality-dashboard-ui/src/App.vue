@@ -12,7 +12,7 @@ import { Timeout } from "@/services/Timeout";
     <div class="app-actions">
       <h2>
         <font-awesome-icon class="menu-icon" icon="tachometer-alt" v-on:click="goto('/')" />
-        <font-awesome-icon class="menu-icon" icon="user" v-on:click="goto('/login')" />
+        <font-awesome-icon class="menu-icon" icon="user" v-on:click="goto('/settings')" />
       </h2>
     </div>
     <div class="app-content">
@@ -41,7 +41,7 @@ export default {
     const appConfig = appConfigStore();
     appConfig.$subscribe((mutation, state) => {
       if (!state.isAuthInitialized) {
-        this.goto("/login");
+        this.goto("/settings");
       }
     });
     this.checkInitialization();

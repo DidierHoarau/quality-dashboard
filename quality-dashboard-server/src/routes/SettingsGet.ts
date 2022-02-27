@@ -13,7 +13,9 @@ async function routes(fastify: FastifyInstance, options) {
     logger.debug(`[${req.method}] ${req.url}`);
     const auth = await Auth.checkAuthHeader(req.headers);
     if (!auth.authenticated) {
-      return res.status(403).send({});
+      return res.status(200).send({
+        isDashboardPublic: (await SettingsDB.get()).isDashboardPublic,
+      });
     }
     return res.status(200).send(await SettingsDB.get());
   });

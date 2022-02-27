@@ -16,6 +16,7 @@ async function routes(fastify: FastifyInstance, options) {
     };
   }
   fastify.put<UpdateSettingsRequest>(`${Config.API_BASE_PATH}/settings/`, async (req, res) => {
+    logger.info(`[${req.method}] ${req.url}`);
     const auth = await Auth.checkAuthHeader(req.headers);
     if (!auth.authenticated) {
       return res.status(403).send({});

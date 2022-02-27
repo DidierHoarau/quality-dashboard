@@ -22,8 +22,8 @@ export class SettingsDB {
     if (!settingsDB.uploadToken) {
       settingsDB.uploadToken = "";
     }
-    if (!settingsDB.isDasboardPublic) {
-      settingsDB.isDasboardPublic = false;
+    if (!settingsDB.isDashboardPublic) {
+      settingsDB.isDashboardPublic = false;
     }
     await fse.writeJSON(DB_FILE_PATH, settingsDB, { spaces: 2 });
   }
@@ -32,7 +32,7 @@ export class SettingsDB {
     return JsonTools.clone(settingsDB);
   }
   public static async update(settings: any): Promise<void> {
-    settingsDB.isDasboardPublic = settings.isDasboardPublic;
+    settingsDB.isDashboardPublic = settings.isDashboardPublic;
     settingsDB.uploadToken = settings.uploadToken;
     await fse.writeJSON(DB_FILE_PATH, settingsDB, { spaces: 2 });
   }
