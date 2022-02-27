@@ -7,7 +7,7 @@ import { FastifyInstance, FastifyRequest, RequestGenericInterface } from "fastif
 
 const logger = new Logger(path.basename(__filename));
 
-async function routes(fastify: FastifyInstance, options) {
+async function routes(fastify: FastifyInstance): Promise<void> {
   //
   fastify.get(`${Config.API_BASE_PATH}/settings/`, async (req, res) => {
     logger.debug(`[${req.method}] ${req.url}`);

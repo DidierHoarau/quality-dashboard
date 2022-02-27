@@ -8,7 +8,7 @@ import { Auth } from "./Auth";
 
 const logger = new Logger(path.basename(__filename));
 
-async function routes(fastify: FastifyInstance, options) {
+async function routes(fastify: FastifyInstance): Promise<void> {
   //
   fastify.get(`${Config.API_BASE_PATH}/reports/`, async (req, res) => {
     logger.debug(`[${req.method}] ${req.url}`);

@@ -8,7 +8,7 @@ import { Config } from "../Config";
 
 const logger = new Logger(path.basename(__filename));
 
-async function routes(fastify: FastifyInstance, options) {
+async function routes(fastify: FastifyInstance): Promise<void> {
   //
   interface LoginUserRequest extends RequestGenericInterface {
     Body: {
@@ -19,14 +19,14 @@ async function routes(fastify: FastifyInstance, options) {
   fastify.post<LoginUserRequest>(`${Config.API_BASE_PATH}/users/login/`, async (req, res) => {
     logger.info(`[${req.method}] ${req.url}`);
     if (!req.body.username) {
-      return res.status(400).send({ error: 'ERR: "username" missing' });
+      return res.status(400).send({ error: "ERR: \"username\" missing" });
     }
     if (!req.body.password) {
-      return res.status(400).send({ error: 'ERR: "password" missing' });
+      return res.status(400).send({ error: "ERR: \"password\" missing" });
     }
     const user = await UsersDB.getByUsername(req.body.username);
     if (!user || user.password !== sha1(req.body.password)) {
-      return res.status(403).send({ error: 'ERR: "username/password" incorrect' });
+      return res.status(403).send({ error: "ERR: \"username/password\" incorrect" });
     }
     return res.status(201).send({ token: await Auth.generateJWT(user) });
   });

@@ -6,7 +6,7 @@ import { FastifyInstance, FastifyRequest, RequestGenericInterface } from "fastif
 
 const logger = new Logger(path.basename(__filename));
 
-async function routes(fastify: FastifyInstance, options) {
+async function routes(fastify: FastifyInstance): Promise<void> {
   //
   fastify.delete(`${Config.API_BASE_PATH}/reports/`, async (req, res) => {
     if (process.env.NODE_ENV !== "dev") {

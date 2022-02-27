@@ -1,4 +1,4 @@
-import type EventAlert from "@types/EventAlert";
+import type { EventAlert } from "@/types/EventAlert";
 
 let callback: any;
 

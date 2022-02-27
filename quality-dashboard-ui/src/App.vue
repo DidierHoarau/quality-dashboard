@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
 import UserService from "./services/UserService";
 import { Timeout } from "@/services/Timeout";
 </script>

@@ -1,7 +1,5 @@
 # BUILD
-FROM node:12-alpine as builder
-
-RUN apk add --no-cache bash git python perl alpine-sdk
+FROM node:16 as builder
 
 WORKDIR /opt/app
 
@@ -13,7 +11,7 @@ RUN export CYPRESS_INSTALL_BINARY=0 && \
   npm run build
 
 # Running
-FROM nginx:latest
+FROM nginx:alpine
 
 RUN rm -fr /etc/nginx/site-enabled/default.conf
 RUN rm -fr /etc/nginx/conf.d/default.conf

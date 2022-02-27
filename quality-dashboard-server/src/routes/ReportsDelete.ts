@@ -7,7 +7,7 @@ import { FastifyInstance, FastifyRequest, RequestGenericInterface } from "fastif
 
 const logger = new Logger(path.basename(__filename));
 
-async function routes(fastify: FastifyInstance, options) {
+async function routes(fastify: FastifyInstance): Promise<void> {
   //
 
   interface DeleteRequest extends RequestGenericInterface {

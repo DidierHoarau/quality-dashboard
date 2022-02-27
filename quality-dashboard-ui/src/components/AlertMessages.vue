@@ -8,8 +8,9 @@
 
 <script lang="ts">
 import AlertService from "@/services/AlertService";
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   data() {
     return {
       messages: [],
@@ -29,7 +30,7 @@ export default {
       }, 5000);
     });
   },
-};
+});
 </script>
 <style>
 .message {

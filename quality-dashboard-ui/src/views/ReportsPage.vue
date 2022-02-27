@@ -67,8 +67,9 @@ import UserService from "../services/UserService";
 import ReportService from "../services/ReportService";
 import { reportsStore } from "@/stores/reports";
 import AlertService from "@/services/AlertService";
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   data() {
     return {
       groups: [],
@@ -94,7 +95,7 @@ export default {
         try {
           await ReportService.deleteVersion(group, project, version);
           this.refreshReports();
-        } catch (err) {
+        } catch (err: any) {
           AlertService.send({ text: `ERR: Error deleting version (${err.message})`, type: "error" });
         }
       }
@@ -183,7 +184,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 <style>
 .report-project,

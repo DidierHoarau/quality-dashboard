@@ -1,7 +1,5 @@
 # BUILD
-FROM node:12-alpine as builder
-
-RUN apk add --no-cache bash git python perl alpine-sdk
+FROM node:16 as builder
 
 WORKDIR /opt/app
 
@@ -15,7 +13,7 @@ RUN npm ci && \
 
 
 # RUN
-FROM node:12-alpine
+FROM node:16-alpine
 
 COPY --from=builder /opt/app/dist /opt/app/dist
 COPY --from=builder /opt/app/node_modules /opt/app/node_modules

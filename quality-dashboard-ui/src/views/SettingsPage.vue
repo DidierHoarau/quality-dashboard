@@ -54,15 +54,16 @@ import AppConfigService from "@/services/AppConfigService";
 import { appConfigStore } from "@/stores/appConfig";
 import { userAuthenticationStore } from "@/stores/userAuthentication";
 import AlertService from "@/services/AlertService";
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   data() {
     return {
       isAuthenticated: false,
       uploadToken: "",
       isInitialized: true,
       account: { password: "", username: "" },
-      config: { isDashboardPublic: "", uploadToken: "" },
+      config: { isDashboardPublic: false, uploadToken: "" },
     };
   },
 
@@ -108,28 +109,28 @@ export default {
       }
     },
 
-    async changePassword() {
+    changePassword() {
       if (!this.account.password) {
         AlertService.send({ text: `Password Missing`, type: "error" });
       } else {
-        await UserService.updatePassword(this.account.password);
+        UserService.updatePassword(this.account.password);
         this.account.username = "";
         this.account.password = "";
       }
     },
 
-    async logout() {
-      await UserService.logout();
+    logout() {
+      UserService.logout();
     },
 
-    async saveSettings() {
+    saveSettings() {
       AppConfigService.update({
         isDashboardPublic: this.config.isDashboardPublic,
         uploadToken: this.config.uploadToken,
       });
     },
   },
-};
+});
 </script>
 <style>
 .settings-page {

@@ -8,7 +8,7 @@ import { Config } from "../Config";
 
 const logger = new Logger(path.basename(__filename));
 
-async function routes(fastify: FastifyInstance, options) {
+async function routes(fastify: FastifyInstance): Promise<void> {
   //
   interface ChangePasswordRequest extends RequestGenericInterface {
     Body: {
@@ -21,7 +21,7 @@ async function routes(fastify: FastifyInstance, options) {
   fastify.put<ChangePasswordRequest>(`${Config.API_BASE_PATH}/users/:id/password`, async (req, res) => {
     logger.info(`[${req.method}] ${req.url}`);
     if (!req.body.password) {
-      return res.status(400).send({ error: 'ERR: "password" missing' });
+      return res.status(400).send({ error: "ERR: \"password\" missing" });
     }
     const auth = await Auth.checkAuthHeader(req.headers);
     if (!auth.authenticated || req.params.id !== auth.info.user_id) {
