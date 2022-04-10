@@ -33,15 +33,16 @@ export class AppApi {
 
     fastify.register(require("fastify-static"), {
       root: path.join(Config.REPORT_DIR),
-      prefix: "/api/reports_data/",
+      prefix: `${Config.API_BASE_PATH}/reports_data/`,
     });
 
-    fastify.listen(Config.API_PORT, function (err, address) {
+    fastify.listen(Config.API_PORT, '0.0.0.0', function (err, address) {
       if (err) {
         fastify.log.error(err);
         process.exit(1);
       }
       logger.info("API Listerning");
+      logger.info(`BASEPATH: ${Config.API_BASE_PATH}`);
     });
   }
 }

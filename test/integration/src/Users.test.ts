@@ -3,12 +3,6 @@ import { Config } from "./Config";
 
 describe("/api/users/", () => {
   //
-  test("GET /api/users/", async () => {
-    const response = await axios.get(`${Config.APIURL}/users/`);
-    expect(response.data).toHaveProperty("users");
-    expect(Array.isArray(response.data.users)).toBeTruthy();
-  });
-
   describe("DELETE /api/users/", () => {
     //
     test("Not initialized by default", async () => {

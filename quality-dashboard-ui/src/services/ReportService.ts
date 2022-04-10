@@ -16,7 +16,7 @@ export default class ReportService {
       });
     }
     try {
-      const reponse = await axios.get(`${import.meta.env.VITE_APP_BASEPATH}/reports/`, {
+      const reponse = await axios.get(`${import.meta.env.VITE_APP_BASEPATH_SERVER}/reports/`, {
         headers: UserService.getAuthHeader(),
       });
       const newGroupsCached = { date: new Date(), data: reponse.data };
@@ -32,7 +32,7 @@ export default class ReportService {
 
   public static async deleteVersion(group: string, project: string, version: string): Promise<void> {
     axios
-      .delete(`${import.meta.env.VITE_APP_BASEPATH}/reports/${group}/${project}/${version}/`, {
+      .delete(`${import.meta.env.VITE_APP_BASEPATH_SERVER}/reports/${group}/${project}/${version}/`, {
         headers: UserService.getAuthHeader(),
       })
       .catch((err) => {

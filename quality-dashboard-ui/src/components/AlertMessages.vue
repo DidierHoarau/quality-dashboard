@@ -13,13 +13,13 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   data() {
     return {
-      messages: [],
+      messages: [] as any[],
     };
   },
 
   // `mounted` is a lifecycle hook which we will explain later
   mounted() {
-    AlertService.onEvent((event) => {
+    AlertService.onEvent((event: any) => {
       this.messages.push({
         text: event.text,
         type: event.type,

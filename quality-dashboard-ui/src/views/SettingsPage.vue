@@ -70,11 +70,11 @@ export default defineComponent({
   mounted() {
     const appConfig = appConfigStore();
     appConfig.$subscribe((mutation, state) => {
-      console.log();
       this.config.isDashboardPublic = state.isDashboardPublic;
       this.config.uploadToken = state.uploadToken;
-      console.log(this.config);
+      this.isInitialized = state.isAuthInitialized;
     });
+    this.isInitialized = appConfig.isAuthInitialized;
     this.config.isDashboardPublic = appConfig.isDashboardPublic;
     this.config.uploadToken = appConfig.uploadToken;
 

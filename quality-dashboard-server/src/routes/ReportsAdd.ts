@@ -7,6 +7,7 @@ import { Config } from "../Config";
 import { ReportsDB } from "../db/ReportsDB";
 import { Logger } from "../utils-std-ts/logger";
 import { FastifyInstance, FastifyRequest, RequestGenericInterface } from "fastify";
+import { Auth } from "./Auth";
 
 const logger = new Logger(path.basename(__filename));
 
@@ -28,6 +29,11 @@ async function routes(fastify: FastifyInstance): Promise<void> {
     `${Config.API_BASE_PATH}/reports/:groupName/:projectName/:projectVersion/:reportName/:processorType`,
     async (req, res) => {
       logger.info(`[${req.method}] ${req.url}`);
+      const auth = await Auth.checkAuthHeader(req.headers);
+
+      if (!auth.authenticated && !auth.validUploadToken ) {
+        return res.status(403).send({});
+      }
 
       const reportFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${req.params.projectVersion}/${req.params.reportName}`;
       if (fse.existsSync(reportFolder)) {
@@ -41,8 +47,11 @@ async function routes(fastify: FastifyInstance): Promise<void> {
       if (data.filename) {
         const reportName = data.filename;
         if (path.extname(reportName) === ".gz") {
-          await pump(data.file, fse.createWriteStream(`${reportFolder}/${reportName}`));
-          await extractTo(`${reportFolder}/${(req as any).files.report.name}`, `${reportFolder}/report`);
+          await pump(data.file, fse.createWriteStream(`${reportFolder}/_report.tar.gz`));
+          await extractTo(`${reportFolder}/_report.tar.gz`, `${reportFolder}/report`).catch(err => {
+            logger.error(`Failed to extract report: ${err.message}`);
+            throw new Error(`Failed to extract report: ${err.message}`)
+          });
         } else if (path.extname(reportName) === ".html") {
           await fse.ensureDir(`${reportFolder}/report`);
           await pump(data.file, fse.createWriteStream(`${reportFolder}/report/report.html`));
@@ -104,6 +113,7 @@ function extractTo(src: string, dest: string): Promise<void> {
       },
       async (err) => {
         if (err) {
+          logger.error(err)
           reject(err);
         } else {
           resolve();

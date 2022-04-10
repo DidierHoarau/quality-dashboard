@@ -1,7 +1,0 @@
-FROM node:12-alpine
-
-RUN apk add --no-cache bash git python perl alpine-sdk
-
-WORKDIR /opt/app
-
-CMD [ "tail", "-f", "/dev/null" ]

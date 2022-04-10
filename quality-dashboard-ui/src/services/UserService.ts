@@ -17,7 +17,7 @@ export default class UserService {
   public static async login(username: string, password: string): Promise<void> {
     axios
       .post(
-        `${import.meta.env.VITE_APP_BASEPATH}/users/login/`,
+        `${import.meta.env.VITE_APP_BASEPATH_SERVER}/users/login/`,
         {
           password,
           username,
@@ -38,7 +38,7 @@ export default class UserService {
   public static async addUser(username: string, password: string): Promise<void> {
     await axios
       .post(
-        `${import.meta.env.VITE_APP_BASEPATH}/users`,
+        `${import.meta.env.VITE_APP_BASEPATH_SERVER}/users`,
         {
           password,
           username,
@@ -58,7 +58,7 @@ export default class UserService {
     const tokenData = JSON.parse(atob(token.split(".")[1]));
     axios
       .put(
-        `${import.meta.env.VITE_APP_BASEPATH}/users/${tokenData.user_id}/password`,
+        `${import.meta.env.VITE_APP_BASEPATH_SERVER}/users/${tokenData.user_id}/password`,
         {
           password,
         },
@@ -94,7 +94,7 @@ export default class UserService {
 
   public static async refreshInitializationStatus(): Promise<void> {
     await axios
-      .get(`${import.meta.env.VITE_APP_BASEPATH}/users/status/`)
+      .get(`${import.meta.env.VITE_APP_BASEPATH_SERVER}/users/status/`)
       .then((response) => {
         const appConfig = appConfigStore();
         appConfig.isAuthInitialized = response.data.initialized;

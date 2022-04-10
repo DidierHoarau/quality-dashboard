@@ -72,7 +72,7 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   data() {
     return {
-      groups: [],
+      groups: [] as any[],
       isAuthenticated: false,
     };
   },
@@ -127,7 +127,7 @@ export default defineComponent({
         return reportLink;
       } else {
         return (
-          import.meta.env.VITE_APP_BASEPATH +
+          import.meta.env.VITE_APP_BASEPATH_SERVER +
           "/reports_data/" +
           groupName +
           "/" +

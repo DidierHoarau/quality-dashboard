@@ -7,10 +7,9 @@ export default class AppConfigService {
   //
   public static async refresh(): Promise<any> {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_APP_BASEPATH}/settings/`, {
+      const response = await axios.get(`${import.meta.env.VITE_APP_BASEPATH_SERVER}/settings/`, {
         headers: UserService.getAuthHeader(),
       });
-      console.log(response.data);
       const appConfig = appConfigStore();
       appConfig.$patch({
         isDashboardPublic: response.data.isDashboardPublic,
@@ -22,10 +21,9 @@ export default class AppConfigService {
   }
 
   public static async update(config: any): Promise<void> {
-    console.log(config);
     await axios
       .put(
-        `${import.meta.env.VITE_APP_BASEPATH}/settings`,
+        `${import.meta.env.VITE_APP_BASEPATH_SERVER}/settings`,
         {
           isDashboardPublic: config.isDashboardPublic,
           uploadToken: config.uploadToken,
