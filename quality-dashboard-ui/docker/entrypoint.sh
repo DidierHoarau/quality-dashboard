@@ -19,7 +19,7 @@ if [ "${BASEPATH_ESC: -1}" != "/" ]; then
     BASEPATH_ESC="${BASEPATH_ESC}/"
 fi
 find /usr/share/nginx/html -type f | grep -v \.ico | xargs sed -i "s@/BASEPATH/@${BASEPATH_ESC}@g"
-xargs sed -i "s@/BASEPATH/@${BASEPATH_ESC}@g" /etc/nginx/conf.d/default.conf
+sed -i "s@BASEPATH@${BASEPATH_ESC}@g" /etc/nginx/conf.d/default.conf
 
 
 # Start NGINX

@@ -15,12 +15,10 @@ RUN chmod +x /entrypoint.sh && \
 # RUN
 FROM nginx:alpine
 
-RUN rm -fr /etc/nginx/site-enabled/default.conf && \
-    rm -fr /etc/nginx/conf.d/default.conf
+RUN rm -fr /etc/nginx/conf.d/default.conf
 
-COPY --from=builder /opt/app/dist /usr/share/nginx/html_base
+COPY --from=builder /opt/app/dist /usr/share/nginx/html
 COPY --from=builder /entrypoint.sh /entrypoint.sh
-COPY docker/nginx/default.conf /etc/nginx/site-enabled/
 COPY docker/nginx/default.conf /etc/nginx/conf.d/
 
 ENTRYPOINT [ "/entrypoint.sh" ]

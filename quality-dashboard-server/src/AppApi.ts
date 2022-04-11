@@ -13,7 +13,10 @@ export class AppApi {
       ignoreTrailingSlash: true,
     });
 
-    fastify.register(require("fastify-cors"), {});
+    fastify.register(require("fastify-cors"), {
+      origin: Config.API_CORS,
+      methods: 'GET,PUT,POST,DELETE'
+    });
     fastify.register(require("fastify-multipart"));
 
     fastify.register(require("./routes/ReportsAdd"));
@@ -38,11 +41,13 @@ export class AppApi {
 
     fastify.listen(Config.API_PORT, '0.0.0.0', function (err, address) {
       if (err) {
+        logger.error(err)
         fastify.log.error(err);
         process.exit(1);
       }
       logger.info("API Listerning");
-      logger.info(`BASEPATH: ${Config.API_BASE_PATH}`);
+      logger.info(`- CORS: ${Config.API_CORS}`);
+      logger.info(`- BASEPATH: ${Config.API_BASE_PATH}/`);
     });
   }
 }
