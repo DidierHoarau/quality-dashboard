@@ -25,12 +25,13 @@ function testService {
 
     curl -X POST \
         -F report=@"${ROOT_DIR}/.tmp/report.html" \
-        ${UPLOAD_SERVER}/reports/quality-dashboard/server/master/container/trivy-html
+        ${UPLOAD_SERVER}/reports/quality-dashboard/${SERVICE}/master/container/trivy-html
 
 
     # rm -fr ${ROOT_DIR}/.tmp
 }
 
 testService quality-dashboard-server
+testService quality-dashboard-ui
 
 
