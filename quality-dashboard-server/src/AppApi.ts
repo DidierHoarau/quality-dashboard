@@ -46,6 +46,7 @@ export class AppApi {
         process.exit(1);
       }
       logger.info("API Listerning");
+      logger.info(`- PORT: ${Config.API_PORT}`);
       logger.info(`- CORS: ${Config.API_CORS}`);
       logger.info(`- BASEPATH: ${Config.API_BASE_PATH}/`);
     });

@@ -73,6 +73,7 @@ export default defineComponent({
       this.config.isDashboardPublic = state.isDashboardPublic;
       this.config.uploadToken = state.uploadToken;
       this.isInitialized = state.isAuthInitialized;
+      console.log(state)
     });
     this.isInitialized = appConfig.isAuthInitialized;
     this.config.isDashboardPublic = appConfig.isDashboardPublic;

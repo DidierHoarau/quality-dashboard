@@ -30,11 +30,10 @@ async function routes(fastify: FastifyInstance): Promise<void> {
     async (req, res) => {
       logger.info(`[${req.method}] ${req.url}`);
       const auth = await Auth.checkAuthHeader(req.headers);
-
+      
       if (!auth.authenticated && !auth.validUploadToken ) {
         return res.status(403).send({});
       }
-
       const reportFolder = `${Config.REPORT_DIR}/${req.params.groupName}/${req.params.projectName}/${req.params.projectVersion}/${req.params.reportName}`;
       if (fse.existsSync(reportFolder)) {
         await fse.remove(reportFolder);
