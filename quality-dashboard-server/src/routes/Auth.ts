@@ -1,5 +1,6 @@
 import * as jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
+import { Config } from "../Config";
 import { SettingsDB } from "../db/SettingsDB";
 
 const AUTH_KEY = uuidv4();
@@ -9,7 +10,7 @@ export class Auth {
   public static async generateJWT(user: any): Promise<string> {
     return jwt.sign(
       {
-        exp: Math.floor(Date.now() / 1000) + 60 * 60,
+        exp: Math.floor(Date.now() / 1000) + Config.AUTH_TOKEN_VALIDITY,
         user_id: user.id,
       },
       AUTH_KEY

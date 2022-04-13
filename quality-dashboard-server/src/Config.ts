@@ -25,4 +25,5 @@ export class Config {
   public static readonly API_BASE_PATH: string = BASEPATH;
   public static readonly API_CORS: string = process.env.API_CORS || '*';
   public static readonly API_PORT: number = 8080;
+  public static readonly AUTH_TOKEN_VALIDITY: number = Number(process.env.AUTH_TOKEN_VALIDITY) || 3600;
 }

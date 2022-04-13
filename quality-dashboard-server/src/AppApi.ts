@@ -49,6 +49,7 @@ export class AppApi {
       logger.info(`- PORT: ${Config.API_PORT}`);
       logger.info(`- CORS: ${Config.API_CORS}`);
       logger.info(`- BASEPATH: ${Config.API_BASE_PATH}/`);
+      logger.info(`- AUTH_TOKEN_VALIDITY: ${Config.AUTH_TOKEN_VALIDITY}`);
     });
   }
 }

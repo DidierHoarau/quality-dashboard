@@ -23,6 +23,8 @@ spec:
           env:
             - name: BASEPATH
               value: /quality-dashboard-server
+            - name: AUTH_TOKEN_VALIDITY
+              value: 3600
           ports:
             - containerPort: 8080
           volumeMounts:
