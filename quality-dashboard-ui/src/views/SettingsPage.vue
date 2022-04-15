@@ -73,7 +73,6 @@ export default defineComponent({
       this.config.isDashboardPublic = state.isDashboardPublic;
       this.config.uploadToken = state.uploadToken;
       this.isInitialized = state.isAuthInitialized;
-      console.log(state)
     });
     this.isInitialized = appConfig.isAuthInitialized;
     this.config.isDashboardPublic = appConfig.isDashboardPublic;
@@ -134,13 +133,27 @@ export default defineComponent({
 });
 </script>
 <style>
+
 .settings-page {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
+
+@media only screen and (max-width: 600px) {
+  .settings-page {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+
+  .settings-app {
+    padding-top: 2em;
+  }
+
+}
+
 .settings-page .form {
-  margin-top: 2em;
+  margin-top: 1em;
 }
 .settings-page .form-label {
   margin-top: 0.8em;

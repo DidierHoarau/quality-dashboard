@@ -1,6 +1,7 @@
 <template>
   <div class="report-list">
     <h2>Reports</h2>
+    <div v-if="!isAuthenticated && !isDashboardPublic">Authentication is required to display the reports.</div>
     <font-awesome-icon class="action-icon" icon="sync" v-on:click="refreshReports()" />
     <div class="report-group" v-for="group in groups" :key="group.name">
       <h3>{{ group.name }}</h3>
@@ -65,8 +66,11 @@
 <script lang="ts">
 import UserService from "../services/UserService";
 import ReportService from "../services/ReportService";
-import { reportsStore } from "@/stores/reports";
+import AppConfigService from "@/services/AppConfigService";
 import AlertService from "@/services/AlertService";
+import { reportsStore } from "@/stores/reports";
+import { userAuthenticationStore } from "@/stores/userAuthentication";
+import { appConfigStore } from "@/stores/appConfig";
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -74,6 +78,7 @@ export default defineComponent({
     return {
       groups: [] as any[],
       isAuthenticated: false,
+      isDashboardPublic: false,
     };
   },
   mounted() {
@@ -82,12 +87,29 @@ export default defineComponent({
       this.groups = state.groups;
     });
 
-    this.checkAuthentication();
+    const userAuthentication = userAuthenticationStore();
+    userAuthentication.$subscribe((mutation, state) => {
+      this.isAuthenticated = state.isAuthenticated;
+      this.refreshReports();
+    });
+    this.isAuthenticated = userAuthentication.isAuthenticated;
+
+    const appConfig = appConfigStore();
+    appConfig.$subscribe((mutation, state) => {
+      this.isDashboardPublic = state.isDashboardPublic;
+      this.refreshReports();
+    });
+    this.isDashboardPublic = appConfig.isDashboardPublic;
+
+    AppConfigService.refresh();
+    UserService.refreshInitializationStatus();
     this.refreshReports();
   },
   methods: {
     async refreshReports() {
-      await ReportService.refresh();
+      if (this.isDashboardPublic || this.isAuthenticated) {
+        await ReportService.refresh();
+      }
     },
 
     async deleteVersion(group: string, project: string, version: string) {

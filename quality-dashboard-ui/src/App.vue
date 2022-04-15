@@ -11,7 +11,7 @@ import { Timeout } from "@/services/Timeout";
     <div class="app-actions">
       <h2>
         <font-awesome-icon class="menu-icon" icon="tachometer-alt" v-on:click="goto('/')" />
-        <font-awesome-icon class="menu-icon" icon="user" v-on:click="goto('/settings')" />
+        <font-awesome-icon class="menu-icon" icon="gear" v-on:click="goto('/settings')" />
       </h2>
     </div>
     <div class="app-content">
@@ -102,6 +102,7 @@ h4 {
   grid-row: 1;
   grid-column: 1;
   padding-left: 5vw;
+  padding-top: 1em;
   background-color: #3949ab;
   color: #eee;
 }
@@ -111,7 +112,7 @@ h4 {
   grid-column: 2;
   text-align: right;
   padding-right: 5vw;
-  padding-top: 0.2em;
+  padding-top: 1em;
   background-color: #3949ab;
   color: #eee;
 }
