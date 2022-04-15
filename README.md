@@ -4,40 +4,43 @@ This project is born out of the need to centralise reports that are generated in
 
 This is made to be as simple and as light as possible.
 
-![alt text](https://github.com/DidierHoarau/quality-dashboard/raw/master/_shared/img/screenshot.png 'Quality Dashboard Screenshot')
+![Application Screnshot](https://github.com/DidierHoarau/quality-dashboard/raw/master/_shared/img/screenshot.png 'Quality Dashboard Screenshot')
 
 ## Installation
 
-The recommended aproach is to deploy the services as Docker container. A deployment is composed of the following services:
+The recommended aproach is to deploy the services as containers. A deployment is composed of the following services:
 
 - Server: this is the backend service holding the data and the reports
 - UI: this is the web frontend to display the reports
-- A Reverse Proxy: you can use any reverse proxy but examples are given here with Traefik
 
 Depending on your preferred deployment target, You will find examples of deployment files in the examples directory:
 
-Docker Compose: [examples/qa-dash-example]
+- Docker Compose: [examples/quality-dashboard-docker-compose]
+- Kubernetes: [examples/quality-dashboard-kubernetes]
 
-## Docker Options
+## Deployment Options
 
-Some aspects can be customized.
+Some aspects can be customized. Parameters can be change with environment variable.
 
-- Data volume: the server image stores the data in the `/opt/data/`
-- The `BASEPATH`: the `ui` container assume that the service is deployed in the root folder but this can be customized with the `BASEPATH` variable. Example: [examples/qa-dash-example-basepath]
+- Server: 
+  - Data volume: the server image stores the data in the `/opt/data/`
+  - The `BASEPATH`: the root path of the APIs. default: `/api`
+  - The `AUTH_TOKEN_VALIDITY`: validity of the authentication token in seconds. default: `3600`
+  - The `API_CORS`: the alloed origin for the web interface (CORS). default: `*`
+- UI:
+  - The `BASEPATH`: the root path of the web interface. default: `/`
+  - The `BASEPATH_SERVER`: The URL of the server. default: `/api`
 
-## User Interface
-
-Once started the user interface will he accessible at the address `http://<hostname>/quality-dashboard`
 
 ## APIs
 
 ### Get Reports
 
-`GET /quality-dashboard/api/reports/`
+`GET <API_URL>/reports/`
 
 ### Add Report
 
-`POST /quality-dashboard/api/reports/<group_name>/<project_name>/<version_name>/<report_name>/<processor_name>`
+`POST <API_URL>/reports/<group_name>/<project_name>/<version_name>/<report_name>/<processor_name>`
 
 The following are arbitrary value: `group_name`, `project_name`, `version_name`, `report_name`
 The following is a value that should match one of the exising processsor: `processor_name`
@@ -52,27 +55,27 @@ Examples:
 # Send Archive
 curl -X POST \
     -F report=@coverage.tar.gz \
-    http://localhost/quality-dashboard/api/reports/qa-dash/server/1.0.0/unit-test-coverage/lcov-coverage
+    http://localhost<API_URL>/reports/qa-dash/server/1.0.0/unit-test-coverage/lcov-coverage
 
 # Send File
 curl -X POST \
     -F report=@test-report.html \
-    http://localhost/quality-dashboard/api/reports/qa-dash/server/1.0.0/unit-test/jest-html-reporter
+    http://localhost<API_URL>/reports/qa-dash/server/1.0.0/unit-test/jest-html-reporter
 
 # JSON
 curl -X POST \
     -d '{"link":"https://github.com/DidierHoarau/quality-dashboard", "success": 10, "error": 9, "warning": 8, "total": 27, "coverage": 80 }' \
     -H "Content-Type: application/json" \
-    http://localhost/quality-dashboard/api/reports/qa-dash/server/1.0.0/test-json/json
+    http://localhost<API_URL>/reports/qa-dash/server/1.0.0/test-json/json
 
 # JSON (alternate)
 curl -X POST \
-    http://localhost/quality-dashboard/api/reports/qa-dash/server/1.0.0/test-json-alt/json?data_json=%7B\"success\"%3A10,\"error\"%3A9,\"warning\"%3A8,\"total\"%3A27,\"coverage\"%3A80%7D
+    http://localhost<API_URL>/reports/qa-dash/server/1.0.0/test-json-alt/json?data_json=%7B\"success\"%3A10,\"error\"%3A9,\"warning\"%3A8,\"total\"%3A27,\"coverage\"%3A80%7D
 
 # JSON and Html Report
 curl -X POST \
     -F report=@"./report.html" \
-    http://localhost/quality-dashboard/api/reports/qa-dash/server/1.0.0/test-json-file/json?data_json=%7B\"success\"%3A10,\"error\"%3A9,\"warning\"%3A8,\"total\"%3A27,\"coverage\"%3A80%7D
+    http://localhost<API_URL>/reports/qa-dash/server/1.0.0/test-json-file/json?data_json=%7B\"success\"%3A10,\"error\"%3A9,\"warning\"%3A8,\"total\"%3A27,\"coverage\"%3A80%7D
 
 
 ```
@@ -117,3 +120,10 @@ module.exports = {
   }
 };
 ```
+
+There are built-in processors for:
+- Jest (HTML output)
+- JSON (given as POST data)
+- LCov (HTML output)
+- Popeye (HTML output)
+- Trivy (HTML output)

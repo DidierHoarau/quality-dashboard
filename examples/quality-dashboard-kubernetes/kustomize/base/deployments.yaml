@@ -18,13 +18,13 @@ spec:
       imagePullSecrets:
         - name: regcred
       containers:
-        - image: didierhoarau/quality-dashboard-server:1.0.0
+        - image: didierhoarau/quality-dashboard-server
           name: quality-dashboard-server
           env:
             - name: BASEPATH
               value: /quality-dashboard-server
             - name: AUTH_TOKEN_VALIDITY
-              value: 3600
+              value: "1209600"
           ports:
             - containerPort: 8080
           volumeMounts:
@@ -55,7 +55,7 @@ spec:
         app: quality-dashboard-ui
     spec:
       containers:
-        - image: didierhoarau/quality-dashboard-ui:1.0.0
+        - image: didierhoarau/quality-dashboard-ui
           name: quality-dashboard-ui
           env:
             - name: BASEPATH
