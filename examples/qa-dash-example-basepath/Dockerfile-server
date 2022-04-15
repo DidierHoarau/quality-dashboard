@@ -1,3 +1,0 @@
-FROM didierhoarau/quality-dashboard-server
-
-COPY processors /opt/app/plugins-user/processors

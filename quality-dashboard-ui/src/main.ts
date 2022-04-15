@@ -1,38 +1,20 @@
-import Vue from "vue";
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+
 import App from "./App.vue";
 import router from "./router";
-import store from "./store";
-import "./registerServiceWorker";
+
 import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-  faCheckCircle,
-  faBomb,
-  faExclamationTriangle,
-  faPercentage,
-  faTrashAlt,
-  faSync,
-  faCog,
-  faUser,
-  faTachometerAlt,
-} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+library.add(fas);
+import { dom } from "@fortawesome/fontawesome-svg-core";
+dom.watch();
 
-library.add(faCheckCircle);
-library.add(faBomb);
-library.add(faExclamationTriangle);
-library.add(faPercentage);
-library.add(faTrashAlt);
-library.add(faSync);
-library.add(faCog);
-library.add(faCog);
-library.add(faUser);
-library.add(faTachometerAlt);
+const app = createApp(App);
 
-Vue.component("font-awesome-icon", FontAwesomeIcon);
-Vue.config.productionTip = false;
+app.use(createPinia());
+app.use(router);
+app.component("font-awesome-icon", FontAwesomeIcon);
 
-new Vue({
-  router,
-  store,
-  render: (h) => h(App),
-}).$mount("#app");
+app.mount("#app");

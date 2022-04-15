@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quality-dashboard-server
+  labels:
+    app: quality-dashboard-server
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: quality-dashboard-server
+  template:
+    metadata:
+      labels:
+        app: quality-dashboard-server
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - image: didierhoarau/quality-dashboard-server:1.0.0
+          name: quality-dashboard-server
+          env:
+            - name: BASEPATH
+              value: /quality-dashboard-server
+            - name: AUTH_TOKEN_VALIDITY
+              value: 3600
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: /opt/data
+              name: pod-volume
+          imagePullPolicy: Always
+      volumes:
+        - name: pod-volume
+          hostPath:
+            path: /mnt/c/docker-data/quality-dashboard
+            type: Directory
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quality-dashboard-ui
+  labels:
+    app: quality-dashboard-ui
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: quality-dashboard-ui
+  template:
+    metadata:
+      labels:
+        app: quality-dashboard-ui
+    spec:
+      containers:
+        - image: didierhoarau/quality-dashboard-ui:1.0.0
+          name: quality-dashboard-ui
+          env:
+            - name: BASEPATH
+              value: /quality-dashboard
+            - name: BASEPATH_SERVER
+              value: /quality-dashboard-server
+          ports:
+            - containerPort: 80
+          imagePullPolicy: Always

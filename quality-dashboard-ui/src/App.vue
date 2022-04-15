@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import UserService from "./services/UserService";
+import { Timeout } from "@/services/Timeout";
+</script>
+
 <template>
   <div class="app">
     <div class="app-title">
@@ -6,75 +11,62 @@
     <div class="app-actions">
       <h2>
         <font-awesome-icon class="menu-icon" icon="tachometer-alt" v-on:click="goto('/')" />
-        <font-awesome-icon class="menu-icon" icon="user" v-on:click="goto('/login')" />
+        <font-awesome-icon class="menu-icon" icon="gear" v-on:click="goto('/settings')" />
       </h2>
     </div>
     <div class="app-content">
       <AlertMessages />
-      <router-view />
+      <RouterView />
     </div>
   </div>
 </template>
 
-
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import axios from "axios";
-import AlertMessages from "./components/AlertMessages.vue";
-import { EventService } from "./services/EventService";
-import { Timeout } from "./services/Timeout";
-import UserService from "./services/UserService";
+import { appConfigStore } from "@/stores/appConfig";
+import AlertMessages from "@/components/AlertMessages.vue";
+import AlertService from "@/services/AlertService";
 
-@Component({
-  components: { AlertMessages }
-})
-export default class Reports extends Vue {
-  //
-  private isAuthenticated = false;
+export default {
+  components: { AlertMessages },
+  data() {
+    return {
+      count: 1,
+      isAuthInitialized: false,
+      isInitialized: true,
+    };
+  },
 
-  private isInitialized = true;
-
-  private created(): void {
-    EventService.$on("user-initialized", (isInitialized: boolean) => {
-      this.isInitialized = isInitialized;
-      if (!isInitialized) {
-        this.goto("/login");
+  mounted() {
+    const appConfig = appConfigStore();
+    appConfig.$subscribe((mutation, state) => {
+      if (!state.isAuthInitialized) {
+        this.goto("/settings");
       }
     });
-    EventService.$on("user-authenticated", (isAuthenticated: boolean) => {
-      this.isAuthenticated = isAuthenticated;
-    });
-    this.checkInitialization();
+    UserService.refreshInitializationStatus();
     this.checkAuthentication();
-  }
-
-  private async checkAuthentication(): Promise<void> {
-    await UserService.checkAuthentication().catch((err: Error) => {
-      EventService.$emit("alert-message", {
-        text: `ERR: Connection to server failed (${err.message})`,
-        type: "error"
+  },
+  methods: {
+    async checkAuthentication() {
+      await UserService.checkAuthentication().catch((err: Error) => {
+        AlertService.send({
+          text: `ERR: Connection to server failed (${err.message})`,
+          type: "error",
+        });
       });
-    });
-    await Timeout.wait(30000);
-    this.checkAuthentication();
-  }
-
-  private async checkInitialization() {
-    UserService.checkInitialization().catch((err: Error) => {
-      EventService.$emit(
-        "alert-message",
-        `ERR: Connection to server failed (${err.message})`
-      );
-    });
-  }
-
-  private async goto(path: string) {
-    this.$router.push(path);
-  }
-}
+      await Timeout.wait(30000);
+      this.checkAuthentication();
+    },
+    async goto(path: string) {
+      this.$router.push(path);
+    },
+  },
+};
 </script>
 
-<style lang="scss">
+<style>
+@import "@/assets/base.css";
+
 body {
   padding: 0;
   margin: 0;
@@ -110,6 +102,7 @@ h4 {
   grid-row: 1;
   grid-column: 1;
   padding-left: 5vw;
+  padding-top: 1em;
   background-color: #3949ab;
   color: #eee;
 }
@@ -119,7 +112,7 @@ h4 {
   grid-column: 2;
   text-align: right;
   padding-right: 5vw;
-  padding-top: 0.2em;
+  padding-top: 1em;
   background-color: #3949ab;
   color: #eee;
 }

@@ -1,3 +1,0 @@
-FROM traefik
-
-COPY dyn-traefik.yml /etc/traefik/dyn-traefik.yml

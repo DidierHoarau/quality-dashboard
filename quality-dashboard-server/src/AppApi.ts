@@ -1,61 +1,55 @@
-import * as bodyParser from 'body-parser';
-import { NextFunction, Response } from 'express';
-import * as express from 'express';
-import * as url from 'url';
-import { Config } from './Config';
-import { router } from './router';
-import { Auth } from './router/Auth';
-import { ExpressWrapper } from './utils-std-ts/express-wrapper';
-import { Logger } from './utils-std-ts/logger';
+import * as path from "path";
+import { Logger } from "./utils-std-ts/logger";
+import Fastify from "fastify";
+import { Config } from "./Config";
 
-const logger = new Logger('AppApi');
+const logger = new Logger(path.basename(__filename));
 
 export class AppApi {
   //
   public static start(): void {
-    const api = ExpressWrapper.createApi();
-    const PORT = 80;
-
-    api.listen(PORT, () => {
-      logger.info(`App listening on port ${PORT}`);
+    const fastify = Fastify({
+      logger: false,
+      ignoreTrailingSlash: true,
     });
 
-    api.use((req, res, next) => {
-      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-      res.header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE');
-      next();
+    fastify.register(require("fastify-cors"), {
+      origin: Config.API_CORS,
+      methods: 'GET,PUT,POST,DELETE'
+    });
+    fastify.register(require("fastify-multipart"));
+
+    fastify.register(require("./routes/ReportsAdd"));
+    fastify.register(require("./routes/ReportsDelete"));
+    fastify.register(require("./routes/ReportsList"));
+    fastify.register(require("./routes/UsersAdd"));
+    fastify.register(require("./routes/UsersChangePassword"));
+    fastify.register(require("./routes/UsersList"));
+    fastify.register(require("./routes/UsersLogin"));
+    fastify.register(require("./routes/UsersStatus"));
+    fastify.register(require("./routes/SettingsGet"));
+    fastify.register(require("./routes/SettingsUpdate"));
+    if (process.env.NODE_ENV === "dev") {
+      fastify.register(require("./routes/UsersReset"));
+      fastify.register(require("./routes/ReportsReset"));
+    }
+
+    fastify.register(require("fastify-static"), {
+      root: path.join(Config.REPORT_DIR),
+      prefix: `${Config.API_BASE_PATH}/reports_data/`,
     });
 
-    api.use(`${Config.API_BASE_PATH}/reports_data`, express.static(Config.REPORT_DIR));
-
-    api.use((req: any, res: Response, next: NextFunction) => {
-      res.status(404);
-      req.customApiLogging = { startDate: new Date() };
-      logger.info(`${req.method} ${url.parse(req.url).pathname}`);
-      next();
-    });
-
-    api.use(async (req: any, res: Response, next: NextFunction) => {
-      req.user = { authenticated: false };
-      if (req.headers.authorization) {
-        try {
-          req.user = await Auth.checkToken(req.headers.authorization.split(' ')[1]);
-        } catch (err) {
-          logger.error(err);
-        }
+    fastify.listen(Config.API_PORT, '0.0.0.0', function (err, address) {
+      if (err) {
+        logger.error(err)
+        fastify.log.error(err);
+        process.exit(1);
       }
-      next();
-    });
-
-    api.use(bodyParser.json());
-
-    api.use(router);
-
-    router.use((req: any, res: Response, next: NextFunction) => {
-      logger.debug(
-        `API Response: ${res.statusCode}; ${new Date().getTime() - req.customApiLogging.startDate.getTime()}ms`
-      );
-      next();
+      logger.info("API Listerning");
+      logger.info(`- PORT: ${Config.API_PORT}`);
+      logger.info(`- CORS: ${Config.API_CORS}`);
+      logger.info(`- BASEPATH: ${Config.API_BASE_PATH}/`);
+      logger.info(`- AUTH_TOKEN_VALIDITY: ${Config.AUTH_TOKEN_VALIDITY}`);
     });
   }
 }

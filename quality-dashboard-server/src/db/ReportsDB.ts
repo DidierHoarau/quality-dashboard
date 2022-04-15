@@ -1,10 +1,11 @@
-import * as fse from 'fs-extra';
-import * as _ from 'lodash';
-import { Config } from '../Config';
-import { JsonTools } from '../utils-std-ts/JsonTools';
-import { Logger } from '../utils-std-ts/logger';
+import * as fse from "fs-extra";
+import * as _ from "lodash";
+import * as path from "path";
+import { Config } from "../Config";
+import { JsonTools } from "../utils-std-ts/JsonTools";
+import { Logger } from "../utils-std-ts/logger";
 
-const logger = new Logger('ReportsDB');
+const logger = new Logger(path.basename(__filename));
 const DB_FILE_PATH = `${Config.DB_DIR}/reports.json`;
 let reportsDB;
 

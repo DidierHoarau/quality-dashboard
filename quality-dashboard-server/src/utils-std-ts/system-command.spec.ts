@@ -1,23 +1,23 @@
-import * as childProcess from 'child_process';
-import { SystemCommand } from './system-command';
-import { sandbox } from './test-utils';
+import * as childProcess from "child_process";
+import { SystemCommand } from "./system-command";
+import { sandbox } from "./test-utils";
 
-describe('SystemCommand', () => {
+describe("SystemCommand", () => {
   //
-  test('should execute simple command', () => {
-    (sandbox as any).stub(childProcess, 'exec').callsFake((command, callback) => {
-      callback(null, 'file1', null);
+  test("should execute simple command", () => {
+    (sandbox as any).stub(childProcess, "exec").callsFake((command, callback) => {
+      callback(null, "file1", null);
     });
-    return SystemCommand.execute('ls');
+    return SystemCommand.execute("ls");
   });
 
-  test('should reject of if there is an error', done => {
-    (sandbox as any).stub(childProcess, 'exec').callsFake((command, callback) => {
-      callback(new Error('test'), 'an error', null);
+  test("should reject of if there is an error", done => {
+    (sandbox as any).stub(childProcess, "exec").callsFake((command, callback) => {
+      callback(new Error("test"), "an error", null);
     });
-    SystemCommand.execute('ls')
+    SystemCommand.execute("ls")
       .then(() => {
-        done('Should not have resolved');
+        done("Should not have resolved");
       })
       .catch(error => {
         done();

@@ -7,27 +7,32 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { EventService } from "../services/EventService";
+import AlertService from "@/services/AlertService";
+import { defineComponent } from 'vue'
 
-@Component
-export default class AlertMessages extends Vue {
-  private messages: any[] = [];
+export default defineComponent({
+  data() {
+    return {
+      messages: [] as any[],
+    };
+  },
 
-  private async created(): Promise<void> {
-    EventService.$on("alert-message", (message: string) => {
+  // `mounted` is a lifecycle hook which we will explain later
+  mounted() {
+    AlertService.onEvent((event: any) => {
       this.messages.push({
-        text: message,
-        date: new Date()
+        text: event.text,
+        type: event.type,
+        date: new Date(),
       });
       setTimeout(() => {
         this.messages.splice(0, 1);
       }, 5000);
     });
-  }
-}
+  },
+});
 </script>
-<style lang="scss">
+<style>
 .message {
   padding: 1rem;
   margin: 1rem;

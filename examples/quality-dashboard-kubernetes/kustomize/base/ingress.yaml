@@ -1,0 +1,32 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: quality-dashboard-ui
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /quality-dashboard
+        pathType: Prefix
+        backend:
+          service:
+            name: quality-dashboard-ui
+            port:
+              number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: quality-dashboard-server
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /quality-dashboard-server
+        pathType: Prefix
+        backend:
+          service:
+            name: quality-dashboard-server
+            port:
+              number: 8080
