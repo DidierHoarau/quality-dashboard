@@ -10,7 +10,7 @@
     "dev": "NODE_ENV=dev nodemon -w src -e ts --exec 'ts-node -P tsconfig.json ./src/app.ts'"
   },
   "dependencies": {
-    "fastify": "^3.27.1",
+    "fastify": "^3.28.0",
     "fastify-cors": "^6.0.2",
     "fastify-multipart": "^5.3.1",
     "fastify-static": "^4.5.0",
