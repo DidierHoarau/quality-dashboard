@@ -13,7 +13,7 @@ RUN chmod +x /entrypoint.sh && \
   npm run build:docker
 
 # RUN
-FROM nginx:alpine
+FROM nginx:1.20-alpine
 
 RUN rm -fr /etc/nginx/conf.d/default.conf
 
