@@ -7,13 +7,13 @@ REPO_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 pm2 delete all || true
 
 # Server
-cd "${REPO_DIR}/quality-dashnoard-server"
+cd "${REPO_DIR}/quality-dashboard-server"
 if [ ! -d node_modules ]; then
     npm ci
 fi
 
 # Agent
-cd "${REPO_DIR}/quality-dashnoard-ui"
+cd "${REPO_DIR}/quality-dashboard-ui"
 if [ ! -d node_modules ]; then
     npm ci
 fi
