@@ -13,6 +13,8 @@ export class AppApi {
       ignoreTrailingSlash: true,
     });
 
+    /* eslint-disable @typescript-eslint/no-var-requires */
+
     fastify.register(require("@fastify/cors"), {
       origin: Config.API_CORS,
       methods: 'GET,PUT,POST,DELETE'
