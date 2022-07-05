@@ -6,6 +6,7 @@
     "build": "vue-tsc --noEmit && vite build",
     "build:docker": "vue-tsc --noEmit && vite build --base=/BASEPATH",
     "preview": "vite preview --port 5050",
+    "test": "vitest --environment jsdom || true",
     "test:unit": "vitest --environment jsdom",
     "test:e2e": "start-server-and-test preview http://127.0.0.1:5050/ 'cypress open'",
     "test:e2e:ci": "start-server-and-test preview http://127.0.0.1:5050/ 'cypress run'",
