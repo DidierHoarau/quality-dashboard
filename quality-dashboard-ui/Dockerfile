@@ -9,7 +9,6 @@ COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh && \
   export CYPRESS_INSTALL_BINARY=0 && \
   npm ci && \
-  npm run lint && \
   npm run build:docker
 
 # RUN
