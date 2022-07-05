@@ -13,11 +13,11 @@ export class AppApi {
       ignoreTrailingSlash: true,
     });
 
-    fastify.register(require("fastify-cors"), {
+    fastify.register(require("@fastify/cors"), {
       origin: Config.API_CORS,
       methods: 'GET,PUT,POST,DELETE'
     });
-    fastify.register(require("fastify-multipart"));
+    fastify.register(require('@fastify/multipart'));
 
     fastify.register(require("./routes/ReportsAdd"));
     fastify.register(require("./routes/ReportsDelete"));
@@ -34,12 +34,12 @@ export class AppApi {
       fastify.register(require("./routes/ReportsReset"));
     }
 
-    fastify.register(require("fastify-static"), {
+    fastify.register(require('@fastify/static'), {
       root: path.join(Config.REPORT_DIR),
       prefix: `${Config.API_BASE_PATH}/reports_data/`,
     });
 
-    fastify.listen(Config.API_PORT, '0.0.0.0', function (err, address) {
+    fastify.listen({ port: Config.API_PORT, host: "0.0.0.0" },  (err, address) => {
       if (err) {
         logger.error(err)
         fastify.log.error(err);
