@@ -41,9 +41,14 @@ async function routes(fastify: FastifyInstance): Promise<void> {
       await fse.ensureDir(reportFolder);
 
       const pump = util.promisify(pipeline);
-      const data = await (req as any).file();
+      let data;
+      try {
+        data = await (req as any).file();
+      } catch(err) {
+        // No file
+      }
 
-      if (data.filename) {
+      if (data && data.filename) {
         const reportName = data.filename;
         if (path.extname(reportName) === ".gz") {
           await pump(data.file, fse.createWriteStream(`${reportFolder}/_report.tar.gz`));

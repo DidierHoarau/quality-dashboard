@@ -1,9 +1,6 @@
 import * as jwt from "jsonwebtoken";
-import { v4 as uuidv4 } from "uuid";
 import { Config } from "../Config";
 import { SettingsDB } from "../db/SettingsDB";
-
-const AUTH_KEY = uuidv4();
 
 export class Auth {
   //
@@ -13,13 +10,13 @@ export class Auth {
         exp: Math.floor(Date.now() / 1000) + Config.AUTH_TOKEN_VALIDITY,
         user_id: user.id,
       },
-      AUTH_KEY
+      Config.AUTH_JWT_KEY
     );
   }
 
   public static async checkToken(token: string): Promise<any> {
     try {
-      const info = jwt.verify(token, AUTH_KEY);
+      const info = jwt.verify(token, Config.AUTH_JWT_KEY);
       return { authenticated: true, info };
     } catch (err) {
       return {
@@ -36,7 +33,7 @@ export class Auth {
     }
     try {
       if (!headers.authorization) throw new Error("Unauthenticated");
-      const info = jwt.verify(headers.authorization.replace("Bearer ", ""), AUTH_KEY);
+      const info = jwt.verify(headers.authorization.replace("Bearer ", ""), Config.AUTH_JWT_KEY);
       return { authenticated: true, validUploadToken, info };
     } catch (err) {
       return {

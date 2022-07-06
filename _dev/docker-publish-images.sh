@@ -20,7 +20,7 @@ function buildService {
     
     echo "Publishing ${SERVICE_NAME}/${SERVICE_VERSION}/${SERVICE_VERSION_MAJOR}/${SERVICE_VERSION_MINOR} - ${OS_VARIANT} - ${TAG}"
 
-    tagAndPush didierhoarau/${SERVICE_NAME}:${SERVICE_VERSION} didierhoarau/${SERVICE_NAME}:${SERVICE_VERSION_MAJOR}
+    tagAndPush didierhoarau/${SERVICE_NAME}:${SERVICE_VERSION} didierhoarau/${SERVICE_NAME}:${SERVICE_VERSION}
     tagAndPush didierhoarau/${SERVICE_NAME}:${SERVICE_VERSION} didierhoarau/${SERVICE_NAME}:${SERVICE_VERSION_MAJOR}
     tagAndPush didierhoarau/${SERVICE_NAME}:${SERVICE_VERSION} didierhoarau/${SERVICE_NAME}:${SERVICE_VERSION_MINOR}
     tagAndPush didierhoarau/${SERVICE_NAME}:${SERVICE_VERSION} didierhoarau/${SERVICE_NAME}
