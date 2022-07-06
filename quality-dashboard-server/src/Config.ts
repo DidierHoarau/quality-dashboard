@@ -1,4 +1,5 @@
 import * as path from "path";
+import { v4 as uuidv4 } from "uuid";
 
 let DATA_PATH_PREFIX = "/opt";
 let UTILS_PATH_PREFIX = "/opt/app";
@@ -26,4 +27,5 @@ export class Config {
   public static readonly API_CORS: string = process.env.API_CORS || '*';
   public static readonly API_PORT: number = 8080;
   public static readonly AUTH_TOKEN_VALIDITY: number = Number(process.env.AUTH_TOKEN_VALIDITY) || 3600;
+  public static readonly AUTH_JWT_KEY: string = process.env.AUTH_JWT_KEY || uuidv4();
 }

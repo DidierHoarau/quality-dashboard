@@ -13,6 +13,8 @@ module.exports = {
       },
       env_development: {
         NODE_ENV: "dev",
+        AUTH_TOKEN_VALIDITY: "5000",
+        AUTH_JWT_KEY: "TO_CHANGE"
       },
     },
     {

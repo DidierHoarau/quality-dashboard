@@ -6,7 +6,6 @@ import { ReportsDB } from "./db/ReportsDB";
 import { UsersDB } from "./db/UsersDB";
 import { SettingsDB } from "./db/SettingsDB";
 import { Logger } from "./utils-std-ts/logger";
-import { SystemCommand } from "./utils-std-ts/system-command";
 
 const logger = new Logger(path.basename(__filename));
 

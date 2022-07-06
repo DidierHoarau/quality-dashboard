@@ -217,13 +217,21 @@ export default defineComponent({
 .report-version {
   border-top: 2px solid;
 }
-.report-reports {
+.report-reports_tmp {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 2em;
+  background-color: red;
+}
+.report-reports {
+  display: grid;
+  /* grid-template-columns: repeat(auto-fit, 100px); */
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  gap: 10px;
+  margin: 5px;
 }
 .report-report {
-  width: 10em;
+  width: 100%;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
   padding: 0.4em 0.8em;
   margin-bottom: 0.8em;
@@ -280,36 +288,4 @@ export default defineComponent({
   margin-top: -3em;
 }
 
-@media screen and (min-width: 801px) and (max-width: 1000px) {
-  .report-reports {
-    grid-template-columns: 1fr 1fr 1fr;
-    display: grid;
-    width: calc(100% - 6vw);
-  }
-  .report-report {
-    width: calc(100% - 6vw);
-  }
-}
-
-@media screen and (min-width: 501px) and (max-width: 800px) {
-  .report-reports {
-    grid-template-columns: 1fr 1fr;
-    display: grid;
-    width: calc(100% - 6vw);
-  }
-  .report-report {
-    width: calc(100% - 8vw);
-  }
-}
-
-@media screen and (max-width: 500px) {
-  .report-reports {
-    grid-template-columns: 1fr;
-    display: grid;
-    width: calc(100% - 6vw);
-  }
-  .report-report {
-    width: calc(100% - 2em);
-  }
-}
 </style>

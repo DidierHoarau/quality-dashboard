@@ -9,7 +9,7 @@ if [ -f .env-dev.sh ]; then
 fi
 
 if [ "$UPLOAD_SERVER" = "" ]; then
-    UPLOAD_SERVER="http://localhost"
+    UPLOAD_SERVER="http://localhost:8080"
 fi
 echo "Report Server: ${UPLOAD_SERVER}"
 
