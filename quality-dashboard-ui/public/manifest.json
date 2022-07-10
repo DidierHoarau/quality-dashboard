@@ -1,6 +1,10 @@
 {
   "name": "quality-dashboard",
   "short_name": "QualityDashboard",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f0f0f0",
+  "theme_color": "#3949ab",
   "icons": [
     {
       "src": "./img/icons/icon-192x192.png",
@@ -12,9 +16,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#f0f0f0",
-  "theme_color": "#3949ab"
+  ]
 }
