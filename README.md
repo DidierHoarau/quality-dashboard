@@ -4,7 +4,7 @@ This project is born out of the need to centralise reports that are generated in
 
 This is made to be as simple and as light as possible.
 
-![Application Screnshot](https://github.com/DidierHoarau/quality-dashboard/raw/master/_dev_/img/screenshot.png 'Quality Dashboard Screenshot')
+![Application Screnshot](https://raw.githubusercontent.com/DidierHoarau/quality-dashboard/bf14f25a47b7212cb13c9278ad409ef4f2491889/_dev/img/screenshot.png 'Quality Dashboard Screenshot')
 
 ## Installation
 
